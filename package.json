@@ -1,0 +1,21 @@
+{
+  "name": "@eo4geo/bok-dataviz",
+  "version": "1.3.0",
+  "description": "Parse the BOKWiki customxml to a collection of nodes and represent them in a D3 circle packing graph",
+  "main": "index.js",
+  "dependencies": {
+    "d3": "^5.9.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "customxml",
+    "parse",
+    "bok",
+    "Body of Knowledge",
+    "circle packing"
+  ],
+  "author": "Aida <amuriach@uji.es>",
+  "license": "ISC"
+}
