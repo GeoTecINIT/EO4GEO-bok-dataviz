@@ -14,8 +14,13 @@
     "parse",
     "bok",
     "Body of Knowledge",
-    "circle packing"
+    "circle packing",
+    "eo4geo"
   ],
   "author": "Aida <amuriach@uji.es>",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/GeoTecINIT/EO4GEO-bok-dataviz"
+  }
 }
