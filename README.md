@@ -33,5 +33,24 @@ import * as bok from '@eo4geo/bok-dataviz';
 bok.visualizeBOKData('#bubbles', 'assets/saved-bok.xml') // will only render the graphical view
 
 bok.visualizeBOKData('#bubbles', 'assets/saved-bok.xml', '#textInfo') // will render the graphical view and the textual view
+
 ```
+
+Other functions
+
+```javascript
+import * as bok from '@eo4geo/bok-dataviz';
+[...]
+
+selectedNodes = bok.searchInBoK(searchText); // returns an array of concepts matching the searchText string
+
+bok.browseToConcept(conceptShortName); // navigates to the concept specified
+
+// Examples
+selectedNodes = bok.searchInBoK('Analytics');
+bok.browseToConcept('GIST'); // navigates to root concept
+bok.browseToConcept('AM'); // navigates to Analytical Methods concept
+
+```
+
 

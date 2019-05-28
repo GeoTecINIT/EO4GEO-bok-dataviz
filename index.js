@@ -66,6 +66,91 @@ CostumD3NodeCollection.prototype.getNodeByNameShort = function (nameShort) {
   return null;
 };
 
+/* FOR SEARCH FUNCTIONALITY */
+CostumD3NodeCollection.prototype.getNodesByKeyword = function (keyword) {
+  var result = []
+  keyword = keyword.toUpperCase();
+
+  for (var i = 0; i < this.nodes.length; i++) {
+    if (this.nodes[i].nameShort.toUpperCase().indexOf(keyword) > -1) {
+      if (!result.includes(this.nodes[i])) {
+        result.push(this.nodes[i]);
+      }
+    }
+  }
+  for (var i = 0; i < this.nodes.length; i++) {
+    if (this.nodes[i].name && this.nodes[i].name.toUpperCase().indexOf(keyword) > -1) {
+      if (!result.includes(this.nodes[i])) {
+        result.push(this.nodes[i]);
+      }
+    }
+  }
+  for (var i = 0; i < this.nodes.length; i++) {
+    if (this.nodes[i].demonstrableSkills != null && this.nodes[i].demonstrableSkills != "" && this.nodes[i].demonstrableSkills.length > 0) {
+      for (var j = 0; j < this.nodes[i].demonstrableSkills.length; j++) {
+        if (this.nodes[i].demonstrableSkills[j].description.toUpperCase().indexOf(keyword) > -1) {
+          if (!result.includes(this.nodes[i])) {
+            result.push(this.nodes[i]);
+          }
+        }
+      }
+    }
+  }
+  for (var i = 0; i < this.nodes.length; i++) {
+    if (this.nodes[i].description != null && this.nodes[i].description != "") {
+      if (this.nodes[i].description.toUpperCase().indexOf(keyword) > -1) {
+        if (!result.includes(this.nodes[i])) {
+          result.push(this.nodes[i]);
+        }
+      }
+    }
+  }
+  return result;
+};
+
+/* FOR SEARCH FUNCTIONALITY */
+CostumD3NodeCollection.prototype.getNodesIdByKeyword = function (keyword) {
+  var result = [];
+  keyword = keyword.toUpperCase();
+
+  for (var i = 0; i < this.nodes.length; i++) {
+    if (this.nodes[i].nameShort.toUpperCase().indexOf(keyword) > -1) {
+      if (!result.includes(this.nodes[i])) {
+        result.push(this.nodes[i].id);
+      }
+    }
+  }
+  for (var i = 0; i < this.nodes.length; i++) {
+    if (this.nodes[i].name && this.nodes[i].name.toUpperCase().indexOf(keyword) > -1) {
+      if (!result.includes(this.nodes[i])) {
+        result.push(this.nodes[i].id);
+      }
+    }
+  }
+  for (var i = 0; i < this.nodes.length; i++) {
+    if (this.nodes[i].demonstrableSkills != null && this.nodes[i].demonstrableSkills != "" && this.nodes[i].demonstrableSkills.length > 0) {
+      for (var j = 0; j < this.nodes[i].demonstrableSkills.length; j++) {
+        if (this.nodes[i].demonstrableSkills[j].description.toUpperCase().indexOf(keyword) > -1) {
+          if (!result.includes(this.nodes[i])) {
+            result.push(this.nodes[i].id);
+          }
+        }
+      }
+    }
+  }
+  for (var i = 0; i < this.nodes.length; i++) {
+    if (this.nodes[i].description != null && this.nodes[i].description != "") {
+      if (this.nodes[i].description.toUpperCase().indexOf(keyword) > -1) {
+        if (!result.includes(this.nodes[i])) {
+          result.push(this.nodes[i].id);
+        }
+      }
+    }
+  }
+  return result;
+};
+
+
 SkillsCollection = function () {
   this.skills = [];
 };
@@ -180,8 +265,8 @@ removeNodesWithNoParent = function (costumD3Collection) {
       added++;
     }
   }
-  console.log("Total nodes with no parent: %i", removed);
-  console.log("Total nodes with parent: %i", added);
+  // console.log("Total nodes with no parent: %i", removed);
+  // console.log("Total nodes with parent: %i", added);
 
   //change array of nodes to remove the null parents
   costumD3Collection.nodes = newNodes;
@@ -236,7 +321,7 @@ parseConcepts = function (concepts) {
     if (!listOfConceptNames.includes(nameShort)) {
       listOfConceptNames.push(nameShort)
     } else {
-      console.log("REPEATED NOTATION: " + nameShort);
+      // console.log("REPEATED NOTATION: " + nameShort);
 
       var alreadyConcept = cD3NCollection.getNodeByNameShort(nameShort);
       var alreadyTimestamp = new Date(alreadyConcept.timestamp)
@@ -244,7 +329,7 @@ parseConcepts = function (concepts) {
 
       // If current node timestamp is newer, replace the old node
       if (currentTimestamp > alreadyTimestamp) {
-        console.log("**** REPLACED OLD CONCEPT " + alreadyConcept.nameShort + " " + alreadyConcept.name + " BY " + nameShort + " " + name);
+        // console.log("**** REPLACED OLD CONCEPT " + alreadyConcept.nameShort + " " + alreadyConcept.name + " BY " + nameShort + " " + name);
         cD3NCollection.pop(); // Pop old one
         cD3NCollection.pop(); // Pop old one
         cD3NCollection.add(cD3N);  //Push new one
@@ -256,7 +341,6 @@ parseConcepts = function (concepts) {
     colorhash[key] = i;
     i++;
   }
-  console.log("Parsed " + cD3NCollection.length + " items.")
 
   return { collection: cD3NCollection, hash: namehash, relations: relationCollection, colors: colorhash };
 
@@ -413,8 +497,10 @@ function randomString(length) {
 
 exports.visualizeBOKData = function (svgId, xmlFile, textId) {
 
+  var COLOR_STROKE_SELECTED = "black";
+
   var svg = d3.select(svgId),
-    margin = 20,
+    margin = 5,
     diameter = +svg.attr("width"),
     g = svg.append("g").attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")");
 
@@ -462,6 +548,7 @@ exports.visualizeBOKData = function (svgId, xmlFile, textId) {
       .attr("r", function (d) { return d.r; })
       .attr("x", function (d) { return d.x; })
       .attr("y", function (d) { return d.y; })
+      .attr("id", function (d) { return d.data.id; })
       .attr("class", function (d) { return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root"; })
       .style("fill", function (d) {
         if (d.depth == 1) {
@@ -482,9 +569,12 @@ exports.visualizeBOKData = function (svgId, xmlFile, textId) {
       }).attr("stroke", "black")
       .attr("stroke-width", "0.5px")
       .on("click", function (d) { if (focus !== d) { dataAndFunctions.zoom(d); exports.displayConcept(d); } d3.event.stopPropagation(); })
-      .on("mouseover", function (d) { this.style.strokeWidth = 1.5 })
-      .on("mouseleave", function (d) { this.style.strokeWidth = 0.5 });
-
+      .on("mouseover", function (d) {
+        if (this.style.stroke != COLOR_STROKE_SELECTED) this.style.strokeWidth = 1
+      })
+      .on("mouseleave", function (d) {
+        if (this.style.stroke != COLOR_STROKE_SELECTED) this.style.strokeWidth = 0.5
+      });
 
     var text = g.selectAll("text").data(nodes).enter().append("text").attr("class", "label").style("pointer-events", "none").style("fill-opacity", function (d) {
       return d.parent === root || (d === root && d.children == null) ? 1 : 0;
@@ -550,6 +640,9 @@ exports.visualizeBOKData = function (svgId, xmlFile, textId) {
       circle.attr("r", function (d) { return d.r * k; });
 
     }
+
+    var nodeData = dataAndFunctions.conceptNodeCollection.getNodeByNameShort("GIST");
+    exports.displayConcept(nodeData);
   });
 
   //displays all available content for the currently focussed concept in the description box:
@@ -567,7 +660,9 @@ exports.visualizeBOKData = function (svgId, xmlFile, textId) {
       var mainNode = document.getElementById(textId)
       mainNode.innerHTML = "";
 
-      var titleNode = document.createElement("h1");
+      var titleNode = document.createElement("h4");
+      titleNode.id = "boktitle";
+      titleNode.attributes = "#boktitle";
       titleNode.innerHTML = "[" + d.nameShort + "] " + d.name;   //display Name and shortcode of concept:
 
       mainNode.appendChild(titleNode);
@@ -598,7 +693,7 @@ exports.visualizeBOKData = function (svgId, xmlFile, textId) {
         var parent = parents.pop();
         /* We attach the browseToConcept function in order to be able to browse to SuperConcepts
          from the concept's list browser of the right */
-        text += "<a  href='#' class='concept-name' onclick='browseToConcept(\"" + parent.nameShort + "\")'><b>-</b> " + parent.name + "</a>";
+        text += "<a class='concept-name' onclick='browseToConcept(\"" + parent.nameShort + "\")'><b>-</b> " + parent.name + "</a>";
         tab += "";
         while (parents.length > 0) {
           parent = parents.pop();
@@ -612,22 +707,22 @@ exports.visualizeBOKData = function (svgId, xmlFile, textId) {
         infoNode.innerHTML = "";
 
       //display description of subconcepts (if any):
-      displayUnorderedList(d.children, "name", "Subconcepts", infoNode);
+      displayUnorderedList(d.children, "name", "Subconcepts", infoNode, "boksubconcepts");
 
       //display description of prerequisites (if any):
-      displayUnorderedList(d.prerequisites, null, "Prequisites", infoNode);
+      displayUnorderedList(d.prerequisites, null, "Prequisites", infoNode, "bokprequisites");
 
       //display description of postrequisites (if any):
-      displayUnorderedList(d.postrequisites, null, "Postrequisites", infoNode);
+      displayUnorderedList(d.postrequisites, null, "Postrequisites", infoNode, "bokpostrequisites");
 
       //display description of similar concepts (if any):
-      displayUnorderedList(d.similarConcepts, null, "Similar concepts", infoNode);
+      displayUnorderedList(d.similarConcepts, null, "Similar concepts", infoNode, "boksimilar");
 
       //display description of demonstrable skills (if any):
-      displayUnorderedList(d.demonstrableSkills, "description", "Demonstrable skills", infoNode);
+      displayUnorderedList(d.demonstrableSkills, "description", "Demonstrable skills", infoNode, "bokskills");
 
       //display source documents of concept (if any):
-      displayUnorderedList(d.sourceDocuments, null, "Source documents", infoNode);
+      displayUnorderedList(d.sourceDocuments, null, "Source documents", infoNode, "boksource");
 
       mainNode.appendChild(infoNode);
 
@@ -635,11 +730,11 @@ exports.visualizeBOKData = function (svgId, xmlFile, textId) {
   };
 
   //displays a list of textelements in HTML
-  displayUnorderedList = function (array, propertyname, headline, domElement) {
+  displayUnorderedList = function (array, propertyname, headline, domElement, idNode) {
     if (array != null && array.length != 0) {
       var text = "";
       text += "";
-      text += "<h5>" + headline + " [" + array.length + "] </h5><div><ul>";
+      text += "<h5>" + headline + " [" + array.length + "] </h5><div #" + idNode + " id=" + idNode + "><ul>";
       for (var i = 0, j = array.length; i < j; i++) {
         var nameShort;
         var value;
@@ -652,10 +747,10 @@ exports.visualizeBOKData = function (svgId, xmlFile, textId) {
         }
         /* We attach the browseToConcept function to each subconcept of the list */
         if (headline == "Subconcepts") {
-          text += "<a href='#' class='concept-name' id='sc-" + nameShort + "' onclick='browseToConcept(\"" + nameShort + "\")'>" + "[" + nameShort + "] " + value + "</a> <br>";
+          text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' id='sc-" + nameShort + "' onclick='browseToConcept(\"" + nameShort + "\")'>" + "[" + nameShort + "] " + value + "</a> <br>";
         }
         else if (headline == "Similar concepts" || headline == "Postrequisites" || headline == "Prequisites") {
-          text += "<a class='concept-name' onclick='browseToConcept(\"" + nameShort + "\")'>" + value + "</a> <br>";
+          text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' onclick='browseToConcept(\"" + nameShort + "\")'>" + value + "</a> <br>";
         }
         else {
           text += "<a>" + value + "</a> <br>";
@@ -678,5 +773,46 @@ exports.visualizeBOKData = function (svgId, xmlFile, textId) {
         exports.displayConcept(nodeData);
         dataAndFunctions.zoom(node);
       }
+    },
+    exports.browseToConcept = function (nameShort) {
+      browseToConcept(nameShort);
     }
+
+  var selectedNodes = [];
+
+  exports.searchInBoK = function (string) {
+    cleanSearchInBOK();
+
+    searchInputFieldDoc = string.trim();
+
+    if (searchInputFieldDoc != "" && searchInputFieldDoc != " ") {
+      selectedNodes = dataAndFunctions.conceptNodeCollection.getNodesIdByKeyword(searchInputFieldDoc);
+      //highlight search
+      for (var i = 0; i < selectedNodes.length; i++) {
+        var circle = document.getElementById(selectedNodes[i]);
+        if (circle != null) {
+          circle.style.stroke = COLOR_STROKE_SELECTED;
+          circle.style.strokeWidth = "2px";
+        }
+      }
+    }
+    return dataAndFunctions.conceptNodeCollection.getNodesByKeyword(searchInputFieldDoc);
+  }
+
+  cleanSearchInBOK = function (d) {
+    //clean search
+    for (var i = 0; i < selectedNodes.length; i++) {
+      var circle = document.getElementById(selectedNodes[i]);
+      if (circle != null) {
+        circle.style.stroke = "";
+        circle.style.strokeWidth = "";
+      }
+    }
+    selectedNodes = [];
+  }
+
+  exports.searchInBoKAndWriteResults = function (string) {
+    var results = exports.searchInBoK(string);
+
+  }
 }
