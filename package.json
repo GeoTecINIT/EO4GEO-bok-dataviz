@@ -1,6 +1,6 @@
 {
   "name": "@eo4geo/bok-dataviz",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Parse the BOKWiki customxml to a collection of nodes and represent them in a D3 circle packing graph",
   "main": "index.js",
   "dependencies": {
