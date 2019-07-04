@@ -499,7 +499,7 @@ exports.visualizeBOKData = function (svgId, xmlFile, textId) {
 
   var COLOR_STROKE_SELECTED = "black";
 
-  var svg = d3.select("div#"+svgId)
+  var svg = d3.select("div"+svgId)
   .append("svg")
   .attr("preserveAspectRatio", "xMinYMin meet")
   .attr("viewBox", "0 0 300 300")
@@ -572,13 +572,13 @@ exports.visualizeBOKData = function (svgId, xmlFile, textId) {
           return "1";
         }
       }).attr("stroke", "black")
-      .attr("stroke-width", "0.5px")
+      .attr("stroke-width", "0.2px")
       .on("click", function (d) { if (focus !== d) { dataAndFunctions.zoom(d); exports.displayConcept(d); } d3.event.stopPropagation(); })
       .on("mouseover", function (d) {
         if (this.style.stroke != COLOR_STROKE_SELECTED) this.style.strokeWidth = 1
       })
       .on("mouseleave", function (d) {
-        if (this.style.stroke != COLOR_STROKE_SELECTED) this.style.strokeWidth = 0.5
+        if (this.style.stroke != COLOR_STROKE_SELECTED) this.style.strokeWidth = 0.2
       });
 
     var text = g.selectAll("text").data(nodes).enter().append("text").attr("class", "label").style("pointer-events", "none").style("fill-opacity", function (d) {
@@ -587,8 +587,7 @@ exports.visualizeBOKData = function (svgId, xmlFile, textId) {
       .style("display", function (d) {
         return d.parent === root || (d === root && d.children == null) ? "inline" : "none";
       })
-      .style("font", '11px "Helvetica Neue", Helvetica, Arial, sans-serif')
-      .style("text-shadow", '0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff')
+      .style("font", '500 11px "Helvetica Neue", Helvetica, Arial, sans-serif')
       .each(function (d) { //This function inserts a label and adds linebreaks, avoiding lines > 13 characters
         var arr = d.data.name.split(" ");
         var arr2 = [];
