@@ -499,9 +499,14 @@ exports.visualizeBOKData = function (svgId, xmlFile, textId) {
 
   var COLOR_STROKE_SELECTED = "black";
 
-  var svg = d3.select(svgId),
-    margin = 5,
-    diameter = +svg.attr("width"),
+  var svg = d3.select("div#"+svgId)
+  .append("svg")
+  .attr("preserveAspectRatio", "xMinYMin meet")
+  .attr("viewBox", "0 0 300 300")
+  .classed("svg-content", true);
+
+  var margin = 5,
+    diameter = svg.node().getAttribute('viewBox').split(" ")[2],
     g = svg.append("g").attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")");
 
   var color = d3.scaleLinear()

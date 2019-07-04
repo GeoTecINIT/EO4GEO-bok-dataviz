@@ -12,17 +12,17 @@ npm i @eo4geo/bok-dataviz
 
 ## Usage
 
-Place an svg and give it an id and the desired size.
+Place a div and give it an id.
 If you want to show also the textual information, place a div and give it an id.
 
 ```html
-<svg id="bubbles" width ="500" height= "500"> </svg>
+<div id="bubbles"> </div>
 <div id="textInfo"></div>
 ```
 
 In Javascript call the function visualizeBOKData( svgID, xmlFile, textID)
 
-- svgID : is the id you gave to the svg in the HTML
+- svgID : is the id you gave to the element in the HTML you want to display the graph
 - xmlFile : is the location of the customxml file 
 - textID : is the id you gave to the div for the textual information
 
