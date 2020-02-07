@@ -228,11 +228,11 @@ exports.parseBOKData = function (bokJSON) {
   }
 
   for (var e = 0; e < bokJSON.external_resources.length; e++) {
-    for (var s = 0; s < bokJSON.external_resources[e].nodes.length; s++) {
-      var node = bokJSON.external_resources[e].nodes[s];
+    for (var s = 0; s < bokJSON.external_resources[e].isExternalResourceOf.length; s++) {
+      var node = bokJSON.external_resources[e].isExternalResourceOf[s];
       var sourceDoc = {};
       sourceDoc.description = bokJSON.external_resources[e].description;
-      sourceDoc.nameShort = bokJSON.external_resources[e].title;;
+      sourceDoc.nameShort = bokJSON.external_resources[e].name;;
       sourceDoc.url = bokJSON.external_resources[e].url;;
       allNodes[node].sourceDocuments.push(sourceDoc);
     }
