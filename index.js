@@ -6,7 +6,8 @@ var Relationtype = {
   POSTREQUISITE: "postrequisites",
   BROADER: "broader",
   NARROWER: "narrower",
-  DEMONSTRATES: "demonstrates"
+  DEMONSTRATES: "demonstrates",
+  SUBCONCEPT: "is subconcept of"
 };
 
 // d3-compliant java object node with default values:
@@ -67,40 +68,47 @@ CostumD3NodeCollection.prototype.getNodeByNameShort = function (nameShort) {
 };
 
 /* FOR SEARCH FUNCTIONALITY */
-CostumD3NodeCollection.prototype.getNodesByKeyword = function (keyword) {
+CostumD3NodeCollection.prototype.getNodesByKeyword = function (keyword, searchCode = true, searchName = true, searchDes = true, searchSkills = true) {
   var result = []
   keyword = keyword.toUpperCase();
-
-  for (var i = 0; i < this.nodes.length; i++) {
-    if (this.nodes[i].nameShort.toUpperCase().indexOf(keyword) > -1) {
-      if (!result.includes(this.nodes[i])) {
-        result.push(this.nodes[i]);
+  if (searchCode) {
+    for (var i = 0; i < this.nodes.length; i++) {
+      if (this.nodes[i].nameShort.toUpperCase().indexOf(keyword) > -1) {
+        if (!result.includes(this.nodes[i])) {
+          result.push(this.nodes[i]);
+        }
       }
     }
   }
-  for (var i = 0; i < this.nodes.length; i++) {
-    if (this.nodes[i].name && this.nodes[i].name.toUpperCase().indexOf(keyword) > -1) {
-      if (!result.includes(this.nodes[i])) {
-        result.push(this.nodes[i]);
+  if (searchName) {
+    for (var i = 0; i < this.nodes.length; i++) {
+      if (this.nodes[i].name && this.nodes[i].name.toUpperCase().indexOf(keyword) > -1) {
+        if (!result.includes(this.nodes[i])) {
+          result.push(this.nodes[i]);
+        }
       }
     }
   }
-  for (var i = 0; i < this.nodes.length; i++) {
-    if (this.nodes[i].demonstrableSkills != null && this.nodes[i].demonstrableSkills != "" && this.nodes[i].demonstrableSkills.length > 0) {
-      for (var j = 0; j < this.nodes[i].demonstrableSkills.length; j++) {
-        if (this.nodes[i].demonstrableSkills[j].description.toUpperCase().indexOf(keyword) > -1) {
-          if (!result.includes(this.nodes[i])) {
-            result.push(this.nodes[i]);
+  if (searchSkills) {
+    for (var i = 0; i < this.nodes.length; i++) {
+      if (this.nodes[i].demonstrableSkills != null && this.nodes[i].demonstrableSkills != "" && this.nodes[i].demonstrableSkills.length > 0) {
+        for (var j = 0; j < this.nodes[i].demonstrableSkills.length; j++) {
+          if (this.nodes[i].demonstrableSkills[j].description.toUpperCase().indexOf(keyword) > -1) {
+            if (!result.includes(this.nodes[i])) {
+              result.push(this.nodes[i]);
+            }
           }
         }
       }
     }
   }
-  for (var i = 0; i < this.nodes.length; i++) {
-    if (this.nodes[i].description != null && this.nodes[i].description != "") {
-      if (this.nodes[i].description.toUpperCase().indexOf(keyword) > -1) {
-        if (!result.includes(this.nodes[i])) {
-          result.push(this.nodes[i]);
+  if (searchDes) {
+    for (var i = 0; i < this.nodes.length; i++) {
+      if (this.nodes[i].description != null && this.nodes[i].description != "") {
+        if (this.nodes[i].description.toUpperCase().indexOf(keyword) > -1) {
+          if (!result.includes(this.nodes[i])) {
+            result.push(this.nodes[i]);
+          }
         }
       }
     }
@@ -109,40 +117,47 @@ CostumD3NodeCollection.prototype.getNodesByKeyword = function (keyword) {
 };
 
 /* FOR SEARCH FUNCTIONALITY */
-CostumD3NodeCollection.prototype.getNodesIdByKeyword = function (keyword) {
+CostumD3NodeCollection.prototype.getNodesIdByKeyword = function (keyword, searchCode = true, searchName = true, searchDes = true, searchSkills = true) {
   var result = [];
   keyword = keyword.toUpperCase();
-
-  for (var i = 0; i < this.nodes.length; i++) {
-    if (this.nodes[i].nameShort.toUpperCase().indexOf(keyword) > -1) {
-      if (!result.includes(this.nodes[i])) {
-        result.push(this.nodes[i].id);
+  if (searchCode) {
+    for (var i = 0; i < this.nodes.length; i++) {
+      if (this.nodes[i].nameShort.toUpperCase().indexOf(keyword) > -1) {
+        if (!result.includes(this.nodes[i])) {
+          result.push(this.nodes[i].id);
+        }
       }
     }
   }
-  for (var i = 0; i < this.nodes.length; i++) {
-    if (this.nodes[i].name && this.nodes[i].name.toUpperCase().indexOf(keyword) > -1) {
-      if (!result.includes(this.nodes[i])) {
-        result.push(this.nodes[i].id);
+  if (searchName) {
+    for (var i = 0; i < this.nodes.length; i++) {
+      if (this.nodes[i].name && this.nodes[i].name.toUpperCase().indexOf(keyword) > -1) {
+        if (!result.includes(this.nodes[i])) {
+          result.push(this.nodes[i].id);
+        }
       }
     }
   }
-  for (var i = 0; i < this.nodes.length; i++) {
-    if (this.nodes[i].demonstrableSkills != null && this.nodes[i].demonstrableSkills != "" && this.nodes[i].demonstrableSkills.length > 0) {
-      for (var j = 0; j < this.nodes[i].demonstrableSkills.length; j++) {
-        if (this.nodes[i].demonstrableSkills[j].description.toUpperCase().indexOf(keyword) > -1) {
-          if (!result.includes(this.nodes[i])) {
-            result.push(this.nodes[i].id);
+  if (searchSkills) {
+    for (var i = 0; i < this.nodes.length; i++) {
+      if (this.nodes[i].demonstrableSkills != null && this.nodes[i].demonstrableSkills != "" && this.nodes[i].demonstrableSkills.length > 0) {
+        for (var j = 0; j < this.nodes[i].demonstrableSkills.length; j++) {
+          if (this.nodes[i].demonstrableSkills[j].description.toUpperCase().indexOf(keyword) > -1) {
+            if (!result.includes(this.nodes[i])) {
+              result.push(this.nodes[i].id);
+            }
           }
         }
       }
     }
   }
-  for (var i = 0; i < this.nodes.length; i++) {
-    if (this.nodes[i].description != null && this.nodes[i].description != "") {
-      if (this.nodes[i].description.toUpperCase().indexOf(keyword) > -1) {
-        if (!result.includes(this.nodes[i])) {
-          result.push(this.nodes[i].id);
+  if (searchDes) {
+    for (var i = 0; i < this.nodes.length; i++) {
+      if (this.nodes[i].description != null && this.nodes[i].description != "") {
+        if (this.nodes[i].description.toUpperCase().indexOf(keyword) > -1) {
+          if (!result.includes(this.nodes[i])) {
+            result.push(this.nodes[i].id);
+          }
         }
       }
     }
@@ -168,342 +183,91 @@ SkillsCollection.prototype.getSkillByURI = function (uri) {
   return null;
 };
 
-// data structure that represent a relation between to concpets of a given type, e.g. similar concept, prerequisite concept...
-Relation = function (sourceID, targetID, type) {
-  this.source = sourceID;
-  this.target = targetID;
-  this.type = type;
-  this.id = Math.random();
-};
-/**
- * Indicates if two relations are identical (have the same id)
- * Note that detecting dublicates would require comparism of each attribute rather than the id
- */
-Relation.prototype.equals = function (relation) {
-  return this.id == relation.id;
-};
+exports.parseBOKData = function (bokJSON) {
 
-Relation.prototype.similar = function (relation) {
-  return (this.source == relation.source && this.target == relation.target && this.type == relation.type) ||
-    //for reflexive relationships:
-    (this.type == Relationtype.SIMILAR && this.type == relation.type && this.target == relation.source && this.source == relation.target);
-};
-
-RelationCollection = function () {
-  this.relations = [];
-};
-
-RelationCollection.prototype.add = function (relation) {
-  //if a similar relationship exists, don't add
-  for (var i = 0; i < this.relations.length; i++) {
-    if (this.relations[i].similar(relation))
-      return;
-  };
-  this.relations.push(relation);
-};
-
-RelationCollection.prototype.getRelations = function (nameShort) {
-  var res = [];
-  for (var i = 0; i < this.relations.length; i++) {
-    if (this.relations[i].source == nameShort) {
-      res.push(this.relations[i]);
-    }
-  }
-  return res;
-};
-
-exports.parseBOKData = function (bokXML) {
-  //Parent node: gin2k:BodyOfKnowledge
-  var d3output = new CostumD3Node();
-
-  //First we gather all the concepts in a CostumD3Collection
-  var concepts = bokXML.documentElement.getElementsByTagName("Concept");
-  var nhashAndcd3Collection = parseConcepts(concepts);
-  var costumD3Collection = nhashAndcd3Collection.collection;
-  var namehash = nhashAndcd3Collection.hash;
-  var relationCollection = nhashAndcd3Collection.relations;
-  var colorhash = nhashAndcd3Collection.colors;
-
-  //We also gather all the skills in a SkillsCollection
-  var skills = bokXML.documentElement.getElementsByTagName("Skill");
-  var skillsCollection = parseSkills(skills);
-
-  //Here we make the relations between every concept and skill
-  var relations = bokXML.documentElement.getElementsByTagName("Relationship");
-  parseRelations(relations, costumD3Collection, skillsCollection);
-
-  //Once we have the relations made (inside the CostumD3Collection),
-  //we must get the concepts with no parent (the most abstract concepts)
-  var higherCostumD3Nodes = getHigherCostumD3Nodes(costumD3Collection);
-
-  removeNodesWithNoParent(costumD3Collection);
-
-  //Our main Concept (or node) is the d3output node (created before),
-  //so we must add to it the more abstract concepts
-  d3output = higherCostumD3Nodes;
-
-  return {
-    nodes: d3output,
-    relations: relationCollection,
-    namehash: namehash,
-    conceptNodeCollection: costumD3Collection,
-    colors: colorhash
-  };
-
-};
-
-removeNodesWithNoParent = function (costumD3Collection) {
-  var newNodes = [];
-  removed = 0;
-  added = 0;
-  for (var i = 0; i < costumD3Collection.nodes.length; i++) {
-    if (costumD3Collection.nodes[i].parent == null && costumD3Collection.nodes[i].nameShort != "GIST") {
-      removed++;
-      // console.log("Node incorrect: %s", costumD3Collection.nodes[i].nameShort);
-    } else {
-      newNodes.push(costumD3Collection.nodes[i]);
-      added++;
-    }
-  }
-  // console.log("Total nodes with no parent: %i", removed);
-  // console.log("Total nodes with parent: %i", added);
-
-  //change array of nodes to remove the null parents
-  costumD3Collection.nodes = newNodes;
-
-};
-
-getHigherCostumD3Nodes = function (costumD3Collection) {
-
-  var res;
-  for (var i = 0; i < costumD3Collection.nodes.length; i++) {
-    if ((costumD3Collection.nodes[i].parent == null && costumD3Collection.nodes[i].nameShort == "GIST") || (costumD3Collection.nodes[i].parent == null && costumD3Collection.nodes[i].name == "Geographic Information Science and Technology")) {
-      res = costumD3Collection.nodes[i];
-    }
-  }
-  return res;
-
-};
-
-parseConcepts = function (concepts) {
-
-  var listOfConceptNames = [];
-
-  //Fake relations
-  var relationCollection = new RelationCollection();
-
-  //It is created the CostumD3NodeCollection in order to have all the nodes created
-  //and work with them
-  cD3NCollection = new CostumD3NodeCollection();
+  var allNodes = [];
   var namehash = {};
   var colorhash = {};
-  var cD3N;
-  for (var i = 0; i < concepts.length; i++) {
-    var description = concepts[i].getAttribute("Definition");
-    var name = concepts[i].getAttribute("PrefLabel");
-    var nameShort = concepts[i].getAttribute("Notation");
-    var uri = concepts[i].getAttribute("URI");
-    var timestamp = concepts[i].getAttribute("TimeStamp");
-    cD3N = new CostumD3Node();
-    cD3N.description = description;
-    cD3N.name = name;
-    cD3N.nameShort = nameShort;
-    cD3N.timestamp = timestamp;
-    cD3N.id = uri;
-    cD3N.uri = uri;
 
-    if (namehash[cD3N.id] == null) {
-      cD3NCollection.add(cD3N);
-    }
-    namehash[cD3N.id] = cD3N.name;
-    colorhash[cD3N.nameShort.substring(0, 2)] = 0;
+  // loop all nodes
+  for (var n = 0; n < bokJSON.nodes.length; n++) {
+    var newNode = new CostumD3Node();
+    newNode.name = bokJSON.nodes[n].label.split("] ")[1];
+    newNode.nameShort = bokJSON.nodes[n].label.split("] ")[0].slice(1);
+    newNode.description = bokJSON.nodes[n].definition;
+    newNode.uri = n;
+    newNode.id = n;
+    newNode.children = [];
+    newNode.demonstrableSkills = [];
+    newNode.sourceDocuments = [];
+    newNode.parent = null;
+    namehash[bokJSON.nodes[n].nodeName] = newNode.name;
+    colorhash[bokJSON.nodes[n].label.substring(1, 3)] = 0;
+    allNodes.push(newNode);
+  }
 
-    if (!listOfConceptNames.includes(nameShort)) {
-      listOfConceptNames.push(nameShort)
-    } else {
-      // console.log("REPEATED NOTATION: " + nameShort);
-
-      var alreadyConcept = cD3NCollection.getNodeByNameShort(nameShort);
-      var alreadyTimestamp = new Date(alreadyConcept.timestamp)
-      var currentTimestamp = new Date(timestamp)
-
-      // If current node timestamp is newer, replace the old node
-      if (currentTimestamp > alreadyTimestamp) {
-        // console.log("**** REPLACED OLD CONCEPT " + alreadyConcept.nameShort + " " + alreadyConcept.name + " BY " + nameShort + " " + name);
-        cD3NCollection.pop(); // Pop old one
-        cD3NCollection.pop(); // Pop old one
-        cD3NCollection.add(cD3N);  //Push new one
-      }
+  for (var l = 0; l < bokJSON.links.length; l++) {
+    // children - parent relation
+    if (bokJSON.links[l].relationName == Relationtype.SUBCONCEPT) {
+      //push node into childre array
+      allNodes[bokJSON.links[l].target].children.push(allNodes[bokJSON.links[l].source]);
+      // add parent
+      allNodes[bokJSON.links[l].source].parent = allNodes[bokJSON.links[l].target];
     }
   }
+
+  for (var o = 0; o < bokJSON.learning_outcomes.length; o++) {
+    for (var s = 0; s < bokJSON.learning_outcomes[o].isLearningOutcomeOf.length; s++) {
+      var node = bokJSON.learning_outcomes[o].isLearningOutcomeOf[s];
+      var skill = {};
+      skill.description = bokJSON.learning_outcomes[o].definition;
+      skill.nameShort = bokJSON.learning_outcomes[o].label;;
+      skill.uri = bokJSON.learning_outcomes[o].name;;
+      allNodes[node].demonstrableSkills.push(skill);
+    }
+  }
+
+  for (var e = 0; e < bokJSON.external_resources.length; e++) {
+    for (var s = 0; s < bokJSON.external_resources[e].nodes.length; s++) {
+      var node = bokJSON.external_resources[e].nodes[s];
+      var sourceDoc = {};
+      sourceDoc.description = bokJSON.external_resources[e].description;
+      sourceDoc.nameShort = bokJSON.external_resources[e].title;;
+      sourceDoc.url = bokJSON.external_resources[e].url;;
+      allNodes[node].sourceDocuments.push(sourceDoc);
+    }
+  }
+
   var i = 0;
   for (var key in colorhash) {
     colorhash[key] = i;
     i++;
   }
 
-  return { collection: cD3NCollection, hash: namehash, relations: relationCollection, colors: colorhash };
-
-};
-
-parseRelations = function (relations, costumD3Collection, skillsCollection) {
-
-  //We work with the CostumD3Collection and add the childrens and the parents
-  //to the appropiate nodes
-  for (var i = 0; i < relations.length; i++) {
-    var objectUri = relations[i].getAttribute("Object").split("_rev")[0];
-    var subjectUri = relations[i].getAttribute("Subject").split("_rev")[0];
-    var predicateUri = relations[i].getAttribute("Predicate");
-    var relation = getRelationFromPredicate(predicateUri);
-    var object = costumD3Collection.getNodeByURI(objectUri);
-    //XML ERROR: Some RelationShip Object's URIs don't match with any concept
-    if (object != null) {
-      //If relation is BROADER, it is a hierarchy relation, so we add the corresponding
-      //children and the corresponding parent to the node
-      if (relation == Relationtype.BROADER) {
-        var subject = costumD3Collection.getNodeByURI(subjectUri);
-        if (subject != null) {
-          var alreadyChild = false;
-          //Here we check that the relation was not previously added to prevent duplicating concepts
-          for (var j = 0; j < object.children.length; j++) {
-            if (object.children[j].uri.split("_rev")[0] == subjectUri) {
-              alreadyChild = true;
-            }
-          }
-          if (!alreadyChild) {
-
-            if (subject.parent == null) {
-              object.children.push(subject);
-              subject.parent = object;
-            } else if (subject.parent.nameShort != object.nameShort && subject.nameShort != object.nameShort) { // Because narrower relations we have to see if the parent is already there. And there are relations pointing to same concept with different revision
-              //we will use the additional Parent to save other parents when more than one
-              subject.additionalParents.push(object);
-              //in case there are more than one parent, duplicate node
-
-              var newCD3N = duplicateNode(subject);
-              object.children.push(newCD3N);
-              newCD3N.parent = object;
-              newCD3N.additionalParents.push(subject.parent);
-
-              cD3NCollection.add(newCD3N);
-
-            }
-          }
-        }
-
-      }//If relation is NARROWER, it is a hierarchy relation, so we add the corresponding
-      //children and the corresponding parent to the node
-      else if (relation == Relationtype.NARROWER) {
-        var subject = costumD3Collection.getNodeByURI(subjectUri);
-        if (subject != null) {
-          var alreadyChild = false;
-          //Here we check that the relation was not previously added to prevent duplicating concepts
-          for (var j = 0; j < subject.children.length; j++) {
-            if (subject.children[j].uri.split("_rev")[0] == objectUri) {
-              alreadyChild = true;
-            }
-          }
-          if (!alreadyChild) {
-            if (object.parent == null) {
-              subject.children.push(object);
-              object.parent = subject;
-            } else if (object.parent.nameShort != subject.nameShort && subject.nameShort != object.nameShort) { // Because narrower relations we have to see if the parent is already there. And there are relations pointing to same concept with different revision
-              //we will use the additional Parent to save other parents when more than one
-              object.additionalParents.push(subject);
-              //in case there are more than one parent, duplicate node
-
-              var newCD3N = duplicateNode(object);
-              subject.children.push(newCD3N);
-              newCD3N.parent = subject;
-              newCD3N.additionalParents.push(object.parent);
-
-              cD3NCollection.add(newCD3N);
-
-            }
-          }
-        }
-      }
-      //If relation is DEMONSTRATES, it is a leaf node (a Skill)
-      //and we add that skill to the correspoding concept
-      else if (relation == Relationtype.DEMONSTRATES) {
-        var skill = skillsCollection.getSkillByURI(subjectUri);
-        if (object.objectives == null) {
-          object.objectives = [];
-        }
-        object.objectives.push(skill);
-        object.demonstrableSkills.push(skill);
-      }
-      //This should add the SIMILAR relations
-      //However, there is an error in the XML file
-      //and the "subject" concepts of the "similarTo"
-      //relations dont exist
-      else if (relation == Relationtype.SIMILAR) {
-        //var subject = costumD3Collection.getNodeByURI( subjectUri );
-        //subject.similarConcepts.push( object );
-        //object.similarConcepts.push( subject );
-      }
-    } else {
-      // console.log("Relationship with incorrect URI: " + objectUri);
-    }
+  var cD3N = new CostumD3NodeCollection();
+  for (var i in allNodes) {
+    cD3N.add(allNodes[i]);
   }
+
+  return {
+    nodes: allNodes[0],
+    relations: bokJSON.links,
+    namehash: namehash,
+    conceptNodeCollection: cD3N,
+    colors: colorhash
+  };
+
 };
 
-parseSkills = function (skills) {
-  var skillsCollection = new SkillsCollection();
-  for (var i = 0; i < skills.length; i++) {
-    var description = skills[i].getAttribute("Definition");
-    var nameShort = skills[i].getAttribute("Notation");
-    var uri = skills[i].getAttribute("URI").split("_rev")[0];
-    var skill = {};
-    skill.description = description;
-    skill.nameShort = nameShort;
-    skill.uri = uri;
-    skillsCollection.add(skill);
-  }
-  return skillsCollection;
-};
-
-getRelationFromPredicate = function (predicate) {
-  if (predicate != null) {
-    var relation = predicate.split('#').pop(-1);
-    return relation;
-  }
-};
-
-duplicateNode = function (subject) {
-  var newCD3N = new CostumD3Node();
-  newCD3N.description = subject.description;
-  newCD3N.name = subject.name;
-  var rand = randomString(3);
-  //Add a random string to the name to differentiate the copy from the original node
-  newCD3N.nameShort = subject.nameShort + rand;
-  newCD3N.id = subject.id + rand;
-  newCD3N.uri = subject.uri;
-  newCD3N.children = [];
-  for (var i = 0; i < subject.children.length; i++) {
-    var child = duplicateNode(subject.children[i]);
-    newCD3N.children.push(child);
-  }
-  return newCD3N;
-};
-
-function randomString(length) {
-  var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  var result = '';
-  for (var i = length; i > 0; --i)
-    result += chars[Math.round(Math.random() * (chars.length - 1))];
-  return result;
-}
-
-exports.visualizeBOKData = function (svgId, xmlFile, textId) {
+exports.visualizeBOKData = function (svgId, jsonFile, textId) {
 
   var COLOR_STROKE_SELECTED = "black";
 
-  var svg = d3.select("div"+svgId)
-  .append("svg")
-  .attr("preserveAspectRatio", "xMinYMin meet")
-  .attr("viewBox", "0 0 300 300")
-  .classed("svg-content", true);
+  var svg = d3.select("div" + svgId)
+    .append("svg")
+    .attr("preserveAspectRatio", "xMinYMin meet")
+    .attr("viewBox", "0 0 300 300")
+    .classed("svg-content", true);
 
   var margin = 5,
     diameter = svg.node().getAttribute('viewBox').split(" ")[2],
@@ -518,7 +282,7 @@ exports.visualizeBOKData = function (svgId, xmlFile, textId) {
     .size([diameter - margin, diameter - margin])
     .padding(2);
 
-  d3.xml(xmlFile).then((root, error) => {
+  d3.json(jsonFile).then((root, error) => {
     var bokData = exports.parseBOKData(root);
 
     if (error) throw error;
@@ -536,8 +300,12 @@ exports.visualizeBOKData = function (svgId, xmlFile, textId) {
     dataAndFunctions.colorhash = bokData.colors;
 
     root = d3.hierarchy(bokData.nodes)
-      .sum(function (d) { return d.size; })
-      .sort(function (a, b) { return b.value - a.value; });
+      .sum(function (d) {
+        return d.size;
+      })
+      .sort(function (a, b) {
+        return b.value - a.value;
+      });
 
     var focus = root,
       nodes = pack(root).descendants(),
@@ -550,11 +318,21 @@ exports.visualizeBOKData = function (svgId, xmlFile, textId) {
     var circle = g.selectAll("circle")
       .data(nodes)
       .enter().append("circle")
-      .attr("r", function (d) { return d.r; })
-      .attr("x", function (d) { return d.x; })
-      .attr("y", function (d) { return d.y; })
-      .attr("id", function (d) { return d.data.id; })
-      .attr("class", function (d) { return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root"; })
+      .attr("r", function (d) {
+        return d.r;
+      })
+      .attr("x", function (d) {
+        return d.x;
+      })
+      .attr("y", function (d) {
+        return d.y;
+      })
+      .attr("id", function (d) {
+        return d.data.id;
+      })
+      .attr("class", function (d) {
+        return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root";
+      })
       .style("fill", function (d) {
         if (d.depth == 1) {
           return colorPalette(dataAndFunctions.colorhash[d.data.nameShort.substring(0, 2)]);
@@ -573,7 +351,13 @@ exports.visualizeBOKData = function (svgId, xmlFile, textId) {
         }
       }).attr("stroke", "black")
       .attr("stroke-width", "0.2px")
-      .on("click", function (d) { if (focus !== d) { dataAndFunctions.zoom(d); exports.displayConcept(d); } d3.event.stopPropagation(); })
+      .on("click", function (d) {
+        if (focus !== d) {
+          dataAndFunctions.zoom(d);
+          exports.displayConcept(d);
+        }
+        d3.event.stopPropagation();
+      })
       .on("mouseover", function (d) {
         if (this.style.stroke != COLOR_STROKE_SELECTED) this.style.strokeWidth = 1
       })
@@ -582,12 +366,12 @@ exports.visualizeBOKData = function (svgId, xmlFile, textId) {
       });
 
     var text = g.selectAll("text").data(nodes).enter().append("text").attr("class", "label").style("pointer-events", "none").style("fill-opacity", function (d) {
-      return d.parent === root || (d === root && d.children == null) ? 1 : 0;
-    })
+        return d.parent === root || (d === root && d.children == null) ? 1 : 0;
+      })
       .style("display", function (d) {
         return d.parent === root || (d === root && d.children == null) ? "inline" : "none";
       })
-      .style("font", '500 11px "Helvetica Neue", Helvetica, Arial, sans-serif')
+      .style("font", '400 6px "Helvetica Neue", Helvetica, Arial, sans-serif')
       .each(function (d) { //This function inserts a label and adds linebreaks, avoiding lines > 13 characters
         var arr = d.data.name.split(" ");
         var arr2 = [];
@@ -602,7 +386,7 @@ exports.visualizeBOKData = function (svgId, xmlFile, textId) {
           }
         }
         for (var i = 0; i < arr2.length; i++) {
-          d3.select(this).append("tspan").text(arr2[i]).attr("dy", i ? "1.2em" : (-0.5 * (j - 1)) + "em").attr("x", 0).attr("text-anchor", "middle").attr("class", "tspan" + i);
+          d3.select(this).append("tspan").text(arr2[i]).attr("dy", i ? "1em" : (-0.5 * (j - 1)) + "em").attr("x", 0).attr("text-anchor", "middle").attr("class", "tspan" + i);
         }
       });
 
@@ -611,23 +395,32 @@ exports.visualizeBOKData = function (svgId, xmlFile, textId) {
 
     svg
       .style("background", "transparent")
-      .on("click", function () { dataAndFunctions.zoom(root); });
+      .on("click", function () {
+        dataAndFunctions.zoom(root);
+      });
 
     zoomTo([root.x, root.y, root.r * 2 + margin]);
 
     dataAndFunctions.zoom = function zoom(d) {
-      var focus0 = focus; focus = d;
+      var focus0 = focus;
+      focus = d;
 
       var transition = d3.transition()
         .duration(d3.event && d3.event.altKey ? 7500 : 750)
         .tween("zoom", function (d) {
           var i = d3.interpolateZoom(view, [focus.x, focus.y, focus.r * 2 + margin]);
-          return function (t) { zoomTo(i(t)); };
+          return function (t) {
+            zoomTo(i(t));
+          };
         });
 
       transition.selectAll("text")
-        .filter(function (d) { return d.parent === focus || this.style.display === "inline" || (d === focus && (d.children == null || d.children == [])); })
-        .style("fill-opacity", function (d) { return d.parent === focus || (d === focus && (d.children == null || d.children == [])) ? 1 : 0; })
+        .filter(function (d) {
+          return d.parent === focus || this.style.display === "inline" || (d === focus && (d.children == null || d.children == []));
+        })
+        .style("fill-opacity", function (d) {
+          return d.parent === focus || (d === focus && (d.children == null || d.children == [])) ? 1 : 0;
+        })
         .on("start", function (d) {
           if (d.parent === focus || (d === focus && (d.children == null || d.children == [])))
             this.style.display = "inline";
@@ -639,9 +432,14 @@ exports.visualizeBOKData = function (svgId, xmlFile, textId) {
     }
 
     function zoomTo(v) {
-      var k = diameter / v[2]; view = v;
-      node.attr("transform", function (d) { return "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")"; });
-      circle.attr("r", function (d) { return d.r * k; });
+      var k = diameter / v[2];
+      view = v;
+      node.attr("transform", function (d) {
+        return "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")";
+      });
+      circle.attr("r", function (d) {
+        return d.r * k;
+      });
 
     }
 
@@ -667,7 +465,7 @@ exports.visualizeBOKData = function (svgId, xmlFile, textId) {
       var titleNode = document.createElement("h4");
       titleNode.id = "boktitle";
       titleNode.attributes = "#boktitle";
-      titleNode.innerHTML = "[" + d.nameShort + "] " + d.name;   //display Name and shortcode of concept:
+      titleNode.innerHTML = d.id + "   [" + d.nameShort + "] " + d.name; //display Name and shortcode of concept:
 
       mainNode.appendChild(titleNode);
 
@@ -684,7 +482,6 @@ exports.visualizeBOKData = function (svgId, xmlFile, textId) {
       mainNode.appendChild(descriptionNode);
       var infoNode = document.createElement("div");
 
-
       // Display hierarchy of parent concepts in a definition list:
       if (d.parent != null) {
         parents = [];
@@ -697,7 +494,7 @@ exports.visualizeBOKData = function (svgId, xmlFile, textId) {
         var parent = parents.pop();
         /* We attach the browseToConcept function in order to be able to browse to SuperConcepts
          from the concept's list browser of the right */
-        text += "<a class='concept-name' onclick='browseToConcept(\"" + parent.nameShort + "\")'><b>-</b> " + parent.name + "</a>";
+        text += "<a href='#' class='concept-name' onclick='browseToConcept(\"" + parent.nameShort + "\")'><b>-</b> " + parent.name + "</a>";
         tab += "";
         while (parents.length > 0) {
           parent = parents.pop();
@@ -711,34 +508,46 @@ exports.visualizeBOKData = function (svgId, xmlFile, textId) {
         infoNode.innerHTML = "";
 
       //display description of subconcepts (if any):
-      displayUnorderedList(d.children, "name", "Subconcepts", infoNode, "boksubconcepts");
+      displayOrderedList(d.children, "name", "Subconcepts", infoNode, "boksubconcepts");
 
       //display description of prerequisites (if any):
-      displayUnorderedList(d.prerequisites, null, "Prequisites", infoNode, "bokprequisites");
+      // displayUnorderedList(d.prerequisites, null, "Prequisites", infoNode, "bokprequisites");
 
       //display description of postrequisites (if any):
-      displayUnorderedList(d.postrequisites, null, "Postrequisites", infoNode, "bokpostrequisites");
+      // displayUnorderedList(d.postrequisites, null, "Postrequisites", infoNode, "bokpostrequisites");
 
       //display description of similar concepts (if any):
-      displayUnorderedList(d.similarConcepts, null, "Similar concepts", infoNode, "boksimilar");
+      // displayUnorderedList(d.similarConcepts, null, "Similar concepts", infoNode, "boksimilar");
 
       //display description of demonstrable skills (if any):
       displayUnorderedList(d.demonstrableSkills, "description", "Demonstrable skills", infoNode, "bokskills");
 
       //display source documents of concept (if any):
-      displayUnorderedList(d.sourceDocuments, null, "Source documents", infoNode, "boksource");
+      displayUnorderedList(d.sourceDocuments, "url", "Source documents", infoNode, "boksource");
 
       mainNode.appendChild(infoNode);
-
     }
   };
 
   //displays a list of textelements in HTML
-  displayUnorderedList = function (array, propertyname, headline, domElement, idNode) {
+  displayOrderedList = function (array, propertyname, headline, domElement, namehash, node) {
     if (array != null && array.length != 0) {
+      // if children, sort them
+      if (array[0].nameShort != null) {
+        array.sort(function (a, b) {
+          if (a.nameShort > b.nameShort) {
+            return 1;
+          }
+          if (a.nameShort < b.nameShort) {
+            return -1;
+          }
+          // a must be equal to b
+          return 0;
+        });
+      }
       var text = "";
       text += "";
-      text += "<h5>" + headline + " [" + array.length + "] </h5><div #" + idNode + " id=" + idNode + "><ul>";
+      text += "<h5>" + headline + " [" + array.length + "] </h5><div><ul>";
       for (var i = 0, j = array.length; i < j; i++) {
         var nameShort;
         var value;
@@ -749,27 +558,63 @@ exports.visualizeBOKData = function (svgId, xmlFile, textId) {
           value = array[i];
           nameShort = array[i];
         }
+        if (namehash != null) {
+          value = namehash[value];
+        }
+
         /* We attach the browseToConcept function to each subconcept of the list */
         if (headline == "Subconcepts") {
-          text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' id='sc-" + nameShort + "' onclick='browseToConcept(\"" + nameShort + "\")'>" + "[" + nameShort + "] " + value + "</a> <br>";
-        }
-        else if (headline == "Similar concepts" || headline == "Postrequisites" || headline == "Prequisites") {
-          text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' onclick='browseToConcept(\"" + nameShort + "\")'>" + value + "</a> <br>";
-        }
-        else {
+          text += "<a href='#' class='concept-name' id='sc-" + nameShort + "' onclick='browseToConcept(\"" + nameShort + "\")'>[" + nameShort + '] ' + array[i][propertyname] + "</a> <br>";
+        } else if (headline == "Similar concepts" || headline == "Postrequisites" || headline == "Prequisites") {
+          text += "<a class='concept-name' onclick='browseToConcept(\"" + nameShort + "\")'>" + value + "</a> <br>";
+        } else {
           text += "<a>" + value + "</a> <br>";
         }
       };
       text += "</ul></div>";
       domElement.innerHTML += text;
-    }
-  },
+    } //else
+    //	domElement.innerHTML = "";
+  };
+
+  //displays a list of textelements in HTML
+  displayUnorderedList = function (array, propertyname, headline, domElement, idNode) {
+      if (array != null && array.length != 0) {
+        var text = "";
+        text += "";
+        text += "<h5>" + headline + " [" + array.length + "] </h5><div #" + idNode + " id=" + idNode + "><ul>";
+        for (var i = 0, j = array.length; i < j; i++) {
+          var nameShort;
+          var value;
+          if (propertyname != null) { //For Subconcepts and Demonstrable Skills and Source Documents
+            value = array[i][propertyname];
+            nameShort = array[i]['nameShort'];
+          } else { //For Similar, Postrequisites and Prerequisites
+            value = array[i];
+            nameShort = array[i];
+          }
+          /* We attach the browseToConcept function to each subconcept of the list */
+          if (headline == "Subconcepts") {
+            text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' id='sc-" + nameShort + "' onclick='browseToConcept(\"" + nameShort + "\")'>" + "[" + nameShort + "] " + value + "</a> <br>";
+          } else if (headline == "Similar concepts" || headline == "Postrequisites" || headline == "Prequisites") {
+            text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' onclick='browseToConcept(\"" + nameShort + "\")'>" + value + "</a> <br>";
+          } else if (headline == "Source documents") {
+            text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' href='" + value + "'>" + nameShort + "</a> <br>";
+          } else {
+            text += "<a>" + value + "</a> <br>";
+          }
+        };
+        text += "</ul></div>";
+        domElement.innerHTML += text;
+      }
+    },
 
     browseToConcept = function (nameShort) {
       var node = null
       dataAndFunctions.nodes.forEach(n => {
         if (n.data.nameShort == nameShort) {
           node = n;
+          return;
         }
       });
       if (node != null) {
@@ -784,13 +629,13 @@ exports.visualizeBOKData = function (svgId, xmlFile, textId) {
 
   var selectedNodes = [];
 
-  exports.searchInBoK = function (string) {
-    cleanSearchInBOK();
+  exports.searchInBoK = function (string, searchCode, searchName, searchDes, searchSkills) {
+    exports.cleanSearchInBOK();
 
     searchInputFieldDoc = string.trim();
 
     if (searchInputFieldDoc != "" && searchInputFieldDoc != " ") {
-      selectedNodes = dataAndFunctions.conceptNodeCollection.getNodesIdByKeyword(searchInputFieldDoc);
+      selectedNodes = dataAndFunctions.conceptNodeCollection.getNodesIdByKeyword(searchInputFieldDoc, searchCode, searchName, searchDes, searchSkills);
       //highlight search
       for (var i = 0; i < selectedNodes.length; i++) {
         var circle = document.getElementById(selectedNodes[i]);
@@ -800,10 +645,10 @@ exports.visualizeBOKData = function (svgId, xmlFile, textId) {
         }
       }
     }
-    return dataAndFunctions.conceptNodeCollection.getNodesByKeyword(searchInputFieldDoc);
+    return dataAndFunctions.conceptNodeCollection.getNodesByKeyword(searchInputFieldDoc, searchCode, searchName, searchDes, searchSkills);
   }
 
-  cleanSearchInBOK = function (d) {
+  exports.cleanSearchInBOK = function (d) {
     //clean search
     for (var i = 0; i < selectedNodes.length; i++) {
       var circle = document.getElementById(selectedNodes[i]);

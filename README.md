@@ -1,6 +1,6 @@
 # EO4GEO-bok-dataviz
 
-EO4GEO-bok-dataviz is an script to parse a customxml file and visualize it in a circle packing d3 layout.
+EO4GEO-bok-dataviz is an script to parse a json-ld file and visualize it in a circle packing d3 layout.
 
 ## Installation
 
@@ -20,19 +20,19 @@ If you want to show also the textual information, place a div and give it an id.
 <div id="textInfo"></div>
 ```
 
-In Javascript call the function visualizeBOKData( svgID, xmlFile, textID)
+In Javascript call the function visualizeBOKData( svgID, jsonFile, textID)
 
 - svgID : is the id you gave to the element in the HTML you want to display the graph
-- xmlFile : is the location of the customxml file 
+- jsonFile : is the location of the json file. You can download it from releases
 - textID : is the id you gave to the div for the textual information
 
 
 ```javascript
 import * as bok from '@eo4geo/bok-dataviz';
 [...]
-bok.visualizeBOKData('#bubbles', 'assets/saved-bok.xml') // will only render the graphical view
+bok.visualizeBOKData('#bubbles', 'assets/saved-bok.json') // will only render the graphical view
 
-bok.visualizeBOKData('#bubbles', 'assets/saved-bok.xml', '#textInfo') // will render the graphical view and the textual view
+bok.visualizeBOKData('#bubbles', 'assets/saved-bok.json', '#textInfo') // will render the graphical view and the textual view
 
 ```
 
