@@ -465,7 +465,7 @@ exports.visualizeBOKData = function (svgId, jsonFile, textId) {
       var titleNode = document.createElement("h4");
       titleNode.id = "boktitle";
       titleNode.attributes = "#boktitle";
-      titleNode.innerHTML = d.id + "   [" + d.nameShort + "] " + d.name; //display Name and shortcode of concept:
+      titleNode.innerHTML = "[" + d.nameShort + "] " + d.name; //display Name and shortcode of concept:
 
       mainNode.appendChild(titleNode);
 
