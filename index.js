@@ -165,24 +165,6 @@ CostumD3NodeCollection.prototype.getNodesIdByKeyword = function (keyword, search
   return result;
 };
 
-
-SkillsCollection = function () {
-  this.skills = [];
-};
-
-SkillsCollection.prototype.add = function (skill) {
-  this.skills.push(skill);
-};
-
-SkillsCollection.prototype.getSkillByURI = function (uri) {
-  for (var i = 0; i < this.skills.length; i++) {
-    if (this.skills[i].uri == uri) {
-      return this.skills[i];
-    }
-  }
-  return null;
-};
-
 exports.parseBOKData = function (bokJSON) {
 
   var allNodes = [];
@@ -467,12 +449,19 @@ exports.visualizeBOKData = function (svgId, jsonFile, textId) {
       titleNode.attributes = "#boktitle";
       titleNode.innerHTML = "[" + d.nameShort + "] " + d.name; //display Name and shortcode of concept:
 
+      var linkNode = document.createElement("a");
+      linkNode.href = "https://findinbok.firebaseapp.com/bok/" + d.nameShort;
+      linkNode.innerHTML = "(Shareable link)";
+
       mainNode.appendChild(titleNode);
+      mainNode.appendChild(linkNode);
 
       //display description of concept.
       var descriptionNode = document.createElement("div");
       if (d.description != null) {
-        var timeFormat = "<small> Last Updated: " + new Date(d.timestamp).toUTCString() + " </small><br>";
+        var timeFormat = "";
+        if (d.timestamp != null && d.timestamp != "")
+          timeFormat = "<small> Last Updated: " + new Date(d.timestamp).toUTCString() + " </small><br>";
         var headline = "<h5>Description:</h5>";
         var currentTxt = "<div id='currentDescription' class='hideContent'>" + d.description + "</div>";
         descriptionNode.innerHTML = timeFormat + headline + currentTxt;
