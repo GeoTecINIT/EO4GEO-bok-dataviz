@@ -450,8 +450,8 @@ exports.visualizeBOKData = function (svgId, jsonFile, textId) {
       titleNode.innerHTML = "[" + d.nameShort + "] " + d.name; //display Name and shortcode of concept:
 
       var linkNode = document.createElement("a");
-      linkNode.href = "https://findinbok.firebaseapp.com/bok/" + d.nameShort;
-      linkNode.innerHTML = "(Shareable link)";
+      linkNode.href = "https://findinbok.web.app/bok/" + d.nameShort;
+      linkNode.innerHTML = "Permalink: https://findinbok.web.app/bok/" + d.nameShort;
 
       mainNode.appendChild(titleNode);
       mainNode.appendChild(linkNode);
