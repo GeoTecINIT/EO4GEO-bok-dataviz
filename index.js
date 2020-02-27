@@ -172,50 +172,50 @@ exports.parseBOKData = function (bokJSON) {
   var colorhash = {};
 
   // loop all nodes
-  for (var n = 0; n < bokJSON.nodes.length; n++) {
+  for (var n = 0; n < bokJSON.concepts.length; n++) {
     var newNode = new CostumD3Node();
-    newNode.name = bokJSON.nodes[n].label.split("] ")[1];
-    newNode.nameShort = bokJSON.nodes[n].label.split("] ")[0].slice(1);
-    newNode.description = bokJSON.nodes[n].definition;
+    newNode.name = bokJSON.concepts[n].name;
+    newNode.nameShort = bokJSON.concepts[n].code;
+    newNode.description = bokJSON.concepts[n].description;
     newNode.uri = n;
     newNode.id = n;
     newNode.children = [];
     newNode.demonstrableSkills = [];
     newNode.sourceDocuments = [];
     newNode.parent = null;
-    namehash[bokJSON.nodes[n].nodeName] = newNode.name;
-    colorhash[bokJSON.nodes[n].label.substring(1, 3)] = 0;
+    namehash[bokJSON.concepts[n].code] = newNode.name;
+    colorhash[bokJSON.concepts[n].code.substring(0, 2)] = 0;
     allNodes.push(newNode);
   }
 
-  for (var l = 0; l < bokJSON.links.length; l++) {
+  for (var l = 0; l < bokJSON.relations.length; l++) {
     // children - parent relation
-    if (bokJSON.links[l].relationName == Relationtype.SUBCONCEPT) {
+    if (bokJSON.relations[l].name == Relationtype.SUBCONCEPT) {
       //push node into childre array
-      allNodes[bokJSON.links[l].target].children.push(allNodes[bokJSON.links[l].source]);
+      allNodes[bokJSON.relations[l].target].children.push(allNodes[bokJSON.relations[l].source]);
       // add parent
-      allNodes[bokJSON.links[l].source].parent = allNodes[bokJSON.links[l].target];
+      allNodes[bokJSON.relations[l].source].parent = allNodes[bokJSON.relations[l].target];
     }
   }
 
-  for (var o = 0; o < bokJSON.learning_outcomes.length; o++) {
-    for (var s = 0; s < bokJSON.learning_outcomes[o].isLearningOutcomeOf.length; s++) {
-      var node = bokJSON.learning_outcomes[o].isLearningOutcomeOf[s];
+  for (var o = 0; o < bokJSON.skills.length; o++) {
+    for (var s = 0; s < bokJSON.skills[o].concepts.length; s++) {
+      var node = bokJSON.skills[o].concepts[s];
       var skill = {};
-      skill.description = bokJSON.learning_outcomes[o].definition;
-      skill.nameShort = bokJSON.learning_outcomes[o].label;;
-      skill.uri = bokJSON.learning_outcomes[o].name;;
+      skill.description = bokJSON.skills[o].name;
+      skill.nameShort = bokJSON.skills[o].name;
+      skill.uri = bokJSON.skills[o].name;
       allNodes[node].demonstrableSkills.push(skill);
     }
   }
 
-  for (var e = 0; e < bokJSON.external_resources.length; e++) {
-    for (var s = 0; s < bokJSON.external_resources[e].isExternalResourceOf.length; s++) {
-      var node = bokJSON.external_resources[e].isExternalResourceOf[s];
+  for (var e = 0; e < bokJSON.references.length; e++) {
+    for (var s = 0; s < bokJSON.references[e].concepts.length; s++) {
+      var node = bokJSON.references[e].concepts[s];
       var sourceDoc = {};
-      sourceDoc.description = bokJSON.external_resources[e].description;
-      sourceDoc.nameShort = bokJSON.external_resources[e].name;;
-      sourceDoc.url = bokJSON.external_resources[e].url;;
+      sourceDoc.description = bokJSON.references[e].description;
+      sourceDoc.nameShort = bokJSON.references[e].name;
+      sourceDoc.url = bokJSON.references[e].url;
       allNodes[node].sourceDocuments.push(sourceDoc);
     }
   }
@@ -233,7 +233,7 @@ exports.parseBOKData = function (bokJSON) {
 
   return {
     nodes: allNodes[0],
-    relations: bokJSON.links,
+    relations: bokJSON.relations,
     namehash: namehash,
     conceptNodeCollection: cD3N,
     colors: colorhash
@@ -264,7 +264,7 @@ exports.visualizeBOKData = function (svgId, jsonFile, textId) {
     .size([diameter - margin, diameter - margin])
     .padding(2);
 
-  d3.json(jsonFile).then((root, error) => {
+  d3.json("https://eo4geo-uji.firebaseio.com/current.json").then((root, error) => {
     var bokData = exports.parseBOKData(root);
 
     if (error) throw error;
@@ -436,9 +436,8 @@ exports.visualizeBOKData = function (svgId, jsonFile, textId) {
       if (textId[0] == "#")
         textId = textId.split("#")[1];
 
-
       var oldD = d;
-      if (d.data)
+      if (d && d.data)
         d = d.data;
 
       var mainNode = document.getElementById(textId)
@@ -449,12 +448,11 @@ exports.visualizeBOKData = function (svgId, jsonFile, textId) {
       titleNode.attributes = "#boktitle";
       titleNode.innerHTML = "[" + d.nameShort + "] " + d.name; //display Name and shortcode of concept:
 
-      var linkNode = document.createElement("a");
-      linkNode.href = "https://findinbok.web.app/bok/" + d.nameShort;
-      linkNode.innerHTML = "Permalink: https://findinbok.web.app/bok/" + d.nameShort;
+      var pNode = document.createElement("p");
+      pNode.innerHTML = "Permalink: <a href= 'https://bok.eo4geo.eu/" + d.nameShort + "'> https://bok.eo4geo.eu/" + d.nameShort + "</a>";
 
+      mainNode.appendChild(pNode);
       mainNode.appendChild(titleNode);
-      mainNode.appendChild(linkNode);
 
       //display description of concept.
       var descriptionNode = document.createElement("div");
