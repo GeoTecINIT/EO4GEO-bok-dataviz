@@ -481,7 +481,7 @@ exports.visualizeBOKData = function (svgId, jsonFile, textId) {
         var parent = parents.pop();
         /* We attach the browseToConcept function in order to be able to browse to SuperConcepts
          from the concept's list browser of the right */
-        text += "<a href='#' class='concept-name' onclick='browseToConcept(\"" + parent.nameShort + "\")'><b>-</b> " + parent.name + "</a>";
+        text += "<a class='concept-name' style='color: #007bff; font-weight: 400; cursor: pointer;' onclick='browseToConcept(\"" + parent.nameShort + "\")'><b>-</b> " + parent.name + "</a>";
         tab += "";
         while (parents.length > 0) {
           parent = parents.pop();
@@ -551,7 +551,7 @@ exports.visualizeBOKData = function (svgId, jsonFile, textId) {
 
         /* We attach the browseToConcept function to each subconcept of the list */
         if (headline == "Subconcepts") {
-          text += "<a href='#' class='concept-name' id='sc-" + nameShort + "' onclick='browseToConcept(\"" + nameShort + "\")'>[" + nameShort + '] ' + array[i][propertyname] + "</a> <br>";
+          text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' id='sc-" + nameShort + "' onclick='browseToConcept(\"" + nameShort + "\")'>[" + nameShort + '] ' + array[i][propertyname] + "</a> <br>";
         } else if (headline == "Similar concepts" || headline == "Postrequisites" || headline == "Prequisites") {
           text += "<a class='concept-name' onclick='browseToConcept(\"" + nameShort + "\")'>" + value + "</a> <br>";
         } else {
