@@ -1,6 +1,6 @@
 # EO4GEO-bok-dataviz
 
-EO4GEO-bok-dataviz is an script to parse a json-ld file and visualize it in a circle packing d3 layout.
+EO4GEO-bok-dataviz is an script to parse EO4GEO BoK and visualize it in a circle packing d3 layout.
 
 ## Installation
 
