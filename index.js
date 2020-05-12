@@ -169,8 +169,30 @@ exports.parseBOKData = function (bokJSON) {
 
   var allNodes = [];
   var namehash = {};
-  var colorhash = {};
-
+    
+  var colorhash = {
+    GI: "#40e0d0",
+    IP: "#1f77b4",
+    CF: "#aec7e8",
+    CV: "#ff7f0e",
+    DA: "#ffbb78",
+    DM: "#2ca02c",
+    DN: "#98df8a",
+    PS: "#d62728",
+    GD: "#cc5b59",
+    GS: "#9467bd",
+    AM: "#8c564b",
+    MD: "#8c564b",
+    OI: "#c49c94",
+    GC: "#e377c2",
+    PP: "#f7b6d2",
+    SD: "#7f7f7f",
+    SH: "#c7c7c7",
+    TA: "#bcbd22",
+    WB: "#07561e",
+    no: "#17becf"
+  };
+  
   // loop all nodes
   for (var n = 0; n < bokJSON.concepts.length; n++) {
     var newNode = new CostumD3Node();
@@ -184,7 +206,6 @@ exports.parseBOKData = function (bokJSON) {
     newNode.sourceDocuments = [];
     newNode.parent = null;
     namehash[bokJSON.concepts[n].code] = newNode.name;
-    colorhash[bokJSON.concepts[n].code.substring(0, 2)] = 0;
     allNodes.push(newNode);
   }
 
@@ -220,12 +241,6 @@ exports.parseBOKData = function (bokJSON) {
     }
   }
 
-  var i = 0;
-  for (var key in colorhash) {
-    colorhash[key] = i;
-    i++;
-  }
-
   var cD3N = new CostumD3NodeCollection();
   for (var i in allNodes) {
     cD3N.add(allNodes[i]);
@@ -241,7 +256,7 @@ exports.parseBOKData = function (bokJSON) {
 
 };
 
-exports.visualizeBOKData = function (svgId, jsonFile, textId) {
+exports.visualizeBOKData = function (svgId, textId) {
 
   var COLOR_STROKE_SELECTED = "black";
 
@@ -317,15 +332,16 @@ exports.visualizeBOKData = function (svgId, jsonFile, textId) {
       })
       .style("fill", function (d) {
         if (d.depth == 1) {
-          return colorPalette(dataAndFunctions.colorhash[d.data.nameShort.substring(0, 2)]);
+          return dataAndFunctions.colorhash[d.data.nameShort.substring(0, 2)] ? dataAndFunctions.colorhash[d.data.nameShort.substring(0, 2)] : dataAndFunctions.colorhash['no'];
         } else if (d.depth == 2) {
-          return colorPalette(dataAndFunctions.colorhash[d.parent.data.nameShort.substring(0, 2)]);
+          return dataAndFunctions.colorhash[d.parent.data.nameShort.substring(0, 2)] ? dataAndFunctions.colorhash[d.parent.data.nameShort.substring(0, 2)] : dataAndFunctions.colorhash['no'];
         } else if (d.depth >= 3) {
-          return colorPalette(dataAndFunctions.colorhash[d.parent.parent.data.nameShort.substring(0, 2)]);
+          return dataAndFunctions.colorhash[d.parent.parent.data.nameShort.substring(0, 2)] ? dataAndFunctions.colorhash[d.parent.parent.data.nameShort.substring(0, 2)] : dataAndFunctions.colorhash['no'];
         } else {
           return "turquoise";
         }
-      }).style("fill-opacity", function (d) {
+      })
+      .style("fill-opacity", function (d) {
         if (d.depth >= 1) {
           return "0.5";
         } else {
@@ -348,8 +364,8 @@ exports.visualizeBOKData = function (svgId, jsonFile, textId) {
       });
 
     var text = g.selectAll("text").data(nodes).enter().append("text").attr("class", "label").style("pointer-events", "none").style("fill-opacity", function (d) {
-        return d.parent === root || (d === root && d.children == null) ? 1 : 0;
-      })
+      return d.parent === root || (d === root && d.children == null) ? 1 : 0;
+    })
       .style("display", function (d) {
         return d.parent === root || (d === root && d.children == null) ? "inline" : "none";
       })
@@ -566,35 +582,35 @@ exports.visualizeBOKData = function (svgId, jsonFile, textId) {
 
   //displays a list of textelements in HTML
   displayUnorderedList = function (array, propertyname, headline, domElement, idNode) {
-      if (array != null && array.length != 0) {
-        var text = "";
-        text += "";
-        text += "<h5>" + headline + " [" + array.length + "] </h5><div #" + idNode + " id=" + idNode + "><ul>";
-        for (var i = 0, j = array.length; i < j; i++) {
-          var nameShort;
-          var value;
-          if (propertyname != null) { //For Subconcepts and Demonstrable Skills and Source Documents
-            value = array[i][propertyname];
-            nameShort = array[i]['nameShort'];
-          } else { //For Similar, Postrequisites and Prerequisites
-            value = array[i];
-            nameShort = array[i];
-          }
-          /* We attach the browseToConcept function to each subconcept of the list */
-          if (headline == "Subconcepts") {
-            text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' id='sc-" + nameShort + "' onclick='browseToConcept(\"" + nameShort + "\")'>" + "[" + nameShort + "] " + value + "</a> <br>";
-          } else if (headline == "Similar concepts" || headline == "Postrequisites" || headline == "Prequisites") {
-            text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' onclick='browseToConcept(\"" + nameShort + "\")'>" + value + "</a> <br>";
-          } else if (headline == "Source documents") {
-            text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' href='" + value + "'>" + nameShort + "</a> <br>";
-          } else {
-            text += "<a>" + value + "</a> <br>";
-          }
-        };
-        text += "</ul></div>";
-        domElement.innerHTML += text;
-      }
-    },
+    if (array != null && array.length != 0) {
+      var text = "";
+      text += "";
+      text += "<h5>" + headline + " [" + array.length + "] </h5><div #" + idNode + " id=" + idNode + "><ul>";
+      for (var i = 0, j = array.length; i < j; i++) {
+        var nameShort;
+        var value;
+        if (propertyname != null) { //For Subconcepts and Demonstrable Skills and Source Documents
+          value = array[i][propertyname];
+          nameShort = array[i]['nameShort'];
+        } else { //For Similar, Postrequisites and Prerequisites
+          value = array[i];
+          nameShort = array[i];
+        }
+        /* We attach the browseToConcept function to each subconcept of the list */
+        if (headline == "Subconcepts") {
+          text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' id='sc-" + nameShort + "' onclick='browseToConcept(\"" + nameShort + "\")'>" + "[" + nameShort + "] " + value + "</a> <br>";
+        } else if (headline == "Similar concepts" || headline == "Postrequisites" || headline == "Prequisites") {
+          text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' onclick='browseToConcept(\"" + nameShort + "\")'>" + value + "</a> <br>";
+        } else if (headline == "Source documents") {
+          text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' href='" + value + "'>" + nameShort + "</a> <br>";
+        } else {
+          text += "<a>" + value + "</a> <br>";
+        }
+      };
+      text += "</ul></div>";
+      domElement.innerHTML += text;
+    }
+  },
 
     browseToConcept = function (nameShort) {
       var node = null

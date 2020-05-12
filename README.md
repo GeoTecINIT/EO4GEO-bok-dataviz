@@ -30,9 +30,9 @@ In Javascript call the function visualizeBOKData( svgID, jsonFile, textID)
 ```javascript
 import * as bok from '@eo4geo/bok-dataviz';
 [...]
-bok.visualizeBOKData('#bubbles', 'assets/saved-bok.json') // will only render the graphical view
+bok.visualizeBOKData('#bubbles') // will only render the graphical view
 
-bok.visualizeBOKData('#bubbles', 'assets/saved-bok.json', '#textInfo') // will render the graphical view and the textual view
+bok.visualizeBOKData('#bubbles', '#textInfo') // will render the graphical view and the textual view
 
 ```
 
