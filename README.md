@@ -10,6 +10,11 @@ Using npm:
 npm i @eo4geo/bok-dataviz
 ```
 
+Using bundle:
+
+- Donwload bundle.js and index.html from release to see a minimim working example.
+
+
 ## Usage
 
 Place a div and give it an id.
