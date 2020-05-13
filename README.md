@@ -12,7 +12,7 @@ npm i @eo4geo/bok-dataviz
 
 Using bundle:
 
-- Donwload bundle.js and index.html from release to see a minimim working example.
+- Donwload bundle.js and index.html from releases to see a minimim working example.
 
 
 ## Usage
@@ -25,10 +25,9 @@ If you want to show also the textual information, place a div and give it an id.
 <div id="textInfo"></div>
 ```
 
-In Javascript call the function visualizeBOKData( svgID, jsonFile, textID)
+In Javascript call the function visualizeBOKData( svgID, textID)
 
 - svgID : is the id you gave to the element in the HTML you want to display the graph
-- jsonFile : is the location of the json file. You can download it from releases
 - textID : is the id you gave to the div for the textual information
 
 
