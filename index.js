@@ -192,7 +192,7 @@ exports.parseBOKData = function (bokJSON) {
     WB: "#07561e",
     no: "#17becf"
   };
-  
+
   // loop all nodes
   for (var n = 0; n < bokJSON.concepts.length; n++) {
     var newNode = new CostumD3Node();
@@ -290,6 +290,7 @@ exports.visualizeBOKData = function (svgId, textId) {
       this.namehash = null;
       this.colorhash = null;
       this.nodes = null;
+      this.currentNode = null;
     };
 
     dataAndFunctions.conceptNodeCollection = bokData.conceptNodeCollection;
@@ -447,6 +448,9 @@ exports.visualizeBOKData = function (svgId, textId) {
 
   //displays all available content for the currently focussed concept in the description box:
   exports.displayConcept = function (d) {
+    if (d || d.data) {
+      dataAndFunctions.currentNode = d.data ? d.data : d;
+    }
     if (textId != null) {
 
       if (textId[0] == "#")
@@ -628,6 +632,9 @@ exports.visualizeBOKData = function (svgId, textId) {
     },
     exports.browseToConcept = function (nameShort) {
       browseToConcept(nameShort);
+    },
+    exports.getCurrentNode = function () {
+      return dataAndFunctions.currentNode;
     }
 
   var selectedNodes = [];

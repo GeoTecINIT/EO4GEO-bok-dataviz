@@ -39,17 +39,22 @@ bok.visualizeBOKData('#bubbles', '#textInfo') // will render the graphical view 
 Other functions
 
 ```javascript
-import * as bok from '@eo4geo/bok-dataviz';
+import * as bok from '@eo4geo/bok-dataviz'; // no need if using bundle.js
 [...]
+// returns an array of concepts matching the searchText string
+selectedNodes = bok.searchInBoK(searchText); 
+// navigates to the concept specified
+bok.browseToConcept(conceptShortName); 
+// returns the current node selected in the graph
+bok..getCurrentNode(); 
+```
+Examples
 
-selectedNodes = bok.searchInBoK(searchText); // returns an array of concepts matching the searchText string
-
-bok.browseToConcept(conceptShortName); // navigates to the concept specified
-
-// Examples
+```javascript
 selectedNodes = bok.searchInBoK('Analytics');
 bok.browseToConcept('GIST'); // navigates to root concept
 bok.browseToConcept('AM'); // navigates to Analytical Methods concept
+console.log(bok..getCurrentNode()); // will print to the console current node
 
 ```
 
