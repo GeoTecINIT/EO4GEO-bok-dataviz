@@ -469,7 +469,7 @@ exports.visualizeBOKData = function (svgId, textId) {
       titleNode.innerHTML = "[" + d.nameShort + "] " + d.name; //display Name and shortcode of concept:
 
       var pNode = document.createElement("p");
-      pNode.innerHTML = "Permalink: <a href= 'https://bok.eo4geo.eu/" + d.nameShort + "'> https://bok.eo4geo.eu/" + d.nameShort + "</a>";
+      pNode.innerHTML = "Permalink: <a href= 'https://bok.eo4geo.eu/" + d.nameShort + "' target='_blank'> https://bok.eo4geo.eu/" + d.nameShort + "</a>";
 
       mainNode.appendChild(pNode);
       mainNode.appendChild(titleNode);
