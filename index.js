@@ -370,7 +370,7 @@ exports.visualizeBOKData = function (svgId, textId) {
       .style("display", function (d) {
         return d.parent === root || (d === root && d.children == null) ? "inline" : "none";
       })
-      .style("font", '400 6px "Helvetica Neue", Helvetica, Arial, sans-serif')
+      .style("font", '500 7px "Helvetica Neue", Helvetica, Arial, sans-serif')
       .each(function (d) { //This function inserts a label and adds linebreaks, avoiding lines > 13 characters
         var arr = d.data.name.split(" ");
         var arr2 = [];
