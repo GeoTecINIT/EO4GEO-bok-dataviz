@@ -7,7 +7,10 @@ var Relationtype = {
   BROADER: "broader",
   NARROWER: "narrower",
   DEMONSTRATES: "demonstrates",
-  SUBCONCEPT: "is subconcept of"
+  SUBCONCEPT: "is subconcept of",
+  SIMILARTO: "is similar to",
+  PREREQUISITEOF: "is prerequisite of"
+
 };
 
 // d3-compliant java object node with default values:
@@ -169,7 +172,7 @@ exports.parseBOKData = function (bokJSON) {
 
   var allNodes = [];
   var namehash = {};
-    
+
   var colorhash = {
     GI: "#40e0d0",
     IP: "#1f77b4",
@@ -204,6 +207,8 @@ exports.parseBOKData = function (bokJSON) {
     newNode.children = [];
     newNode.demonstrableSkills = [];
     newNode.sourceDocuments = [];
+    newNode.similarConcepts = [];
+    newNode.prerequisites = [];
     newNode.parent = null;
     namehash[bokJSON.concepts[n].code] = newNode.name;
     allNodes.push(newNode);
@@ -216,6 +221,16 @@ exports.parseBOKData = function (bokJSON) {
       allNodes[bokJSON.relations[l].target].children.push(allNodes[bokJSON.relations[l].source]);
       // add parent
       allNodes[bokJSON.relations[l].source].parent = allNodes[bokJSON.relations[l].target];
+    }
+    if (bokJSON.relations[l].name == Relationtype.SIMILARTO) {
+      //push node into childre array
+      allNodes[bokJSON.relations[l].target].similarConcepts.push(allNodes[bokJSON.relations[l].source]);
+      allNodes[bokJSON.relations[l].source].similarConcepts.push(allNodes[bokJSON.relations[l].target]);
+    }
+    if (bokJSON.relations[l].name == Relationtype.PREREQUISITEOF) {
+      //push node into childre array
+      allNodes[bokJSON.relations[l].target].prerequisites.push(allNodes[bokJSON.relations[l].source]);
+      allNodes[bokJSON.relations[l].source].prerequisites.push(allNodes[bokJSON.relations[l].target]);
     }
   }
 
@@ -370,7 +385,7 @@ exports.visualizeBOKData = function (svgId, textId) {
       .style("display", function (d) {
         return d.parent === root || (d === root && d.children == null) ? "inline" : "none";
       })
-      .style("font", '500 7px "Helvetica Neue", Helvetica, Arial, sans-serif')
+      .style("font", '400 6px "Helvetica Neue", Helvetica, Arial, sans-serif')
       .each(function (d) { //This function inserts a label and adds linebreaks, avoiding lines > 13 characters
         var arr = d.data.name.split(" ");
         var arr2 = [];
@@ -518,13 +533,13 @@ exports.visualizeBOKData = function (svgId, textId) {
       displayOrderedList(d.children, "name", "Subconcepts", infoNode, "boksubconcepts");
 
       //display description of prerequisites (if any):
-      // displayUnorderedList(d.prerequisites, null, "Prequisites", infoNode, "bokprequisites");
+      displayUnorderedList(d.prerequisites, null, "Prequisites", infoNode, "bokprequisites");
 
       //display description of postrequisites (if any):
       // displayUnorderedList(d.postrequisites, null, "Postrequisites", infoNode, "bokpostrequisites");
 
       //display description of similar concepts (if any):
-      // displayUnorderedList(d.similarConcepts, null, "Similar concepts", infoNode, "boksimilar");
+      displayUnorderedList(d.similarConcepts, null, "Similar concepts", infoNode, "boksimilar");
 
       //display description of demonstrable skills (if any):
       displayUnorderedList(d.demonstrableSkills, "description", "Demonstrable skills", infoNode, "bokskills");
@@ -598,13 +613,13 @@ exports.visualizeBOKData = function (svgId, textId) {
           nameShort = array[i]['nameShort'];
         } else { //For Similar, Postrequisites and Prerequisites
           value = array[i];
-          nameShort = array[i];
+          nameShort = array[i]['nameShort'];
         }
         /* We attach the browseToConcept function to each subconcept of the list */
         if (headline == "Subconcepts") {
           text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' id='sc-" + nameShort + "' onclick='browseToConcept(\"" + nameShort + "\")'>" + "[" + nameShort + "] " + value + "</a> <br>";
         } else if (headline == "Similar concepts" || headline == "Postrequisites" || headline == "Prequisites") {
-          text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' onclick='browseToConcept(\"" + nameShort + "\")'>" + value + "</a> <br>";
+          text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' id='sc-" + nameShort + "' onclick='browseToConcept(\"" + nameShort + "\")'>[" + nameShort + '] ' + array[i].name + "</a> <br>";
         } else if (headline == "Source documents") {
           text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' href='" + value + "'>" + nameShort + "</a> <br>";
         } else {
