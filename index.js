@@ -22,6 +22,7 @@ CostumD3Node = function () {
   this.size = 100;
   //field required by D3, equals super-concept:
   this.parent = null;
+  this.otherParents = [];
   this.additionalParents = [];
   //field required by D3, equals subconcepts
   this.children = [];
@@ -211,6 +212,7 @@ exports.parseBOKData = function (bokJSON) {
     newNode.similarConcepts = [];
     newNode.prerequisites = [];
     newNode.parent = null;
+    newNode.otherParents = [];
     namehash[bokJSON.concepts[n].code] = newNode.name;
     allNodes.push(newNode);
   }
@@ -218,10 +220,13 @@ exports.parseBOKData = function (bokJSON) {
   for (var l = 0; l < bokJSON.relations.length; l++) {
     // children - parent relation
     if (bokJSON.relations[l].name == Relationtype.SUBCONCEPT) {
+      if ( allNodes[bokJSON.relations[l].source].parent != null ) {
+        allNodes[bokJSON.relations[l].source].otherParents.push(allNodes[bokJSON.relations[l].target]);
+      } else {
+        allNodes[bokJSON.relations[l].source].parent = allNodes[bokJSON.relations[l].target];
+      }
       //push node into childre array
       allNodes[bokJSON.relations[l].target].children.push(allNodes[bokJSON.relations[l].source]);
-      // add parent
-      allNodes[bokJSON.relations[l].source].parent = allNodes[bokJSON.relations[l].target];
     }
     if (bokJSON.relations[l].name == Relationtype.SIMILARTO) {
       //push node into childre array
@@ -509,7 +514,7 @@ exports.visualizeBOKData = function (svgId, textId) {
         if (d.timestamp != null && d.timestamp != "")
           timeFormat = "<small> Last Updated: " + new Date(d.timestamp).toUTCString() + " </small><br>";
         var headline = "<h5>Description:</h5>";
-        var currentTxt = "<div id='currentDescription' class='hideContent'>" + d.description + "</div>";
+        var currentTxt = "<div id='currentDescription' class='hideContent'>" + d.description + "</div><br>";
         descriptionNode.innerHTML = timeFormat + headline + currentTxt;
       } else
         descriptionNode.innerHTML = "";
@@ -520,12 +525,14 @@ exports.visualizeBOKData = function (svgId, textId) {
       // Display hierarchy of parent concepts in a definition list:
       if (d.parent != null) {
         parents = [];
+        let cont = 1;
         //trace all parents upwards from the hierarchy
         for (var p = d.parent; p != null; p = p.parent) {
           parents.push(p);
         }
+        if ( d.otherParents.length > 0) cont = cont + d.otherParents.length;
         var tab = "";
-        var text = "<h5>Superconcepts [" + parents.length + "] </h5><div><dl>";
+        var text = "<h5>Superconcepts [" + cont + "] </h5><div><dl>";
         var parent = parents.pop();
         /* We attach the browseToConcept function in order to be able to browse to SuperConcepts
          from the concept's list browser of the right */
@@ -541,6 +548,29 @@ exports.visualizeBOKData = function (svgId, textId) {
         infoNode.innerHTML = text;
       } else
         infoNode.innerHTML = "";
+
+      //case when a concept has more than one parent
+      if ( d.otherParents.length > 0  ) {
+        for ( let i = 0; i < d.otherParents.length ; i++ ){
+          let otherPar = [];
+          let op = d.otherParents[i];
+          while ( op != null ) {
+            otherPar.push(op);
+            op = op.parent
+          }
+          var other = otherPar.pop();
+          var text = "<div><dl>";
+          text += "<a class='concept-name' style='color: #007bff; font-weight: 400; cursor: pointer;' onclick='browseToConcept(" + other.nameShort + ")'><b>-</b> " + other.name + "</a>";
+          tab += "";
+          while (otherPar.length > 0) {
+            other = otherPar.pop();
+            text += "<dd style='margin: 0 0 1.5em 0.8em'><dl><dt style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' onclick='browseToConcept(\"" + other.nameShort + "\")'><b>-</b> " + "[" + other.nameShort + "] " + other.name + "</dt>";
+            tab += "</dl></dd>";
+          }
+          text += tab + "</dl></div>";
+          infoNode.innerHTML += text;
+        }
+      }
 
       //display description of subconcepts (if any):
       displayOrderedList(d.children, "name", "Subconcepts", infoNode, "boksubconcepts");
