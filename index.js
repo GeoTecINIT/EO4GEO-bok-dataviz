@@ -7,7 +7,10 @@ var Relationtype = {
   BROADER: "broader",
   NARROWER: "narrower",
   DEMONSTRATES: "demonstrates",
-  SUBCONCEPT: "is subconcept of"
+  SUBCONCEPT: "is subconcept of",
+  SIMILARTO: "is similar to",
+  PREREQUISITEOF: "is prerequisite of"
+
 };
 
 // d3-compliant java object node with default values:
@@ -19,6 +22,7 @@ CostumD3Node = function () {
   this.size = 100;
   //field required by D3, equals super-concept:
   this.parent = null;
+  this.otherParents = [];
   this.additionalParents = [];
   //field required by D3, equals subconcepts
   this.children = [];
@@ -169,7 +173,29 @@ exports.parseBOKData = function (bokJSON) {
 
   var allNodes = [];
   var namehash = {};
-  var colorhash = {};
+
+  var colorhash = {
+    GI: "#40e0d0",
+    IP: "#1f77b4",
+    CF: "#aec7e8",
+    CV: "#ff7f0e",
+    DA: "#ffbb78",
+    DM: "#2ca02c",
+    DN: "#98df8a",
+    PS: "#d62728",
+    GD: "#cc5b59",
+    GS: "#9467bd",
+    AM: "#8c564b",
+    MD: "#8c564b",
+    OI: "#c49c94",
+    GC: "#e377c2",
+    PP: "#f7b6d2",
+    SD: "#7f7f7f",
+    SH: "#c7c7c7",
+    TA: "#bcbd22",
+    WB: "#07561e",
+    no: "#17becf"
+  };
 
   // loop all nodes
   for (var n = 0; n < bokJSON.concepts.length; n++) {
@@ -177,24 +203,40 @@ exports.parseBOKData = function (bokJSON) {
     newNode.name = bokJSON.concepts[n].name;
     newNode.nameShort = bokJSON.concepts[n].code;
     newNode.description = bokJSON.concepts[n].description;
+    newNode.selfAssesment = bokJSON.concepts[n].selfAssesment;
     newNode.uri = n;
     newNode.id = n;
     newNode.children = [];
     newNode.demonstrableSkills = [];
     newNode.sourceDocuments = [];
+    newNode.similarConcepts = [];
+    newNode.prerequisites = [];
     newNode.parent = null;
+    newNode.otherParents = [];
     namehash[bokJSON.concepts[n].code] = newNode.name;
-    colorhash[bokJSON.concepts[n].code.substring(0, 2)] = 0;
     allNodes.push(newNode);
   }
 
   for (var l = 0; l < bokJSON.relations.length; l++) {
     // children - parent relation
     if (bokJSON.relations[l].name == Relationtype.SUBCONCEPT) {
+      if ( allNodes[bokJSON.relations[l].source].parent != null ) {
+        allNodes[bokJSON.relations[l].source].otherParents.push(allNodes[bokJSON.relations[l].target]);
+      } else {
+        allNodes[bokJSON.relations[l].source].parent = allNodes[bokJSON.relations[l].target];
+      }
       //push node into childre array
       allNodes[bokJSON.relations[l].target].children.push(allNodes[bokJSON.relations[l].source]);
-      // add parent
-      allNodes[bokJSON.relations[l].source].parent = allNodes[bokJSON.relations[l].target];
+    }
+    if (bokJSON.relations[l].name == Relationtype.SIMILARTO) {
+      //push node into childre array
+      allNodes[bokJSON.relations[l].target].similarConcepts.push(allNodes[bokJSON.relations[l].source]);
+      allNodes[bokJSON.relations[l].source].similarConcepts.push(allNodes[bokJSON.relations[l].target]);
+    }
+    if (bokJSON.relations[l].name == Relationtype.PREREQUISITEOF) {
+      //push node into childre array
+      allNodes[bokJSON.relations[l].target].prerequisites.push(allNodes[bokJSON.relations[l].source]);
+      //allNodes[bokJSON.relations[l].source].prerequisites.push(allNodes[bokJSON.relations[l].target]);
     }
   }
 
@@ -220,12 +262,6 @@ exports.parseBOKData = function (bokJSON) {
     }
   }
 
-  var i = 0;
-  for (var key in colorhash) {
-    colorhash[key] = i;
-    i++;
-  }
-
   var cD3N = new CostumD3NodeCollection();
   for (var i in allNodes) {
     cD3N.add(allNodes[i]);
@@ -241,7 +277,7 @@ exports.parseBOKData = function (bokJSON) {
 
 };
 
-exports.visualizeBOKData = function (svgId, jsonFile, textId) {
+exports.visualizeBOKData = function (svgId, textId) {
 
   var COLOR_STROKE_SELECTED = "black";
 
@@ -275,6 +311,7 @@ exports.visualizeBOKData = function (svgId, jsonFile, textId) {
       this.namehash = null;
       this.colorhash = null;
       this.nodes = null;
+      this.currentNode = null;
     };
 
     dataAndFunctions.conceptNodeCollection = bokData.conceptNodeCollection;
@@ -317,15 +354,18 @@ exports.visualizeBOKData = function (svgId, jsonFile, textId) {
       })
       .style("fill", function (d) {
         if (d.depth == 1) {
-          return colorPalette(dataAndFunctions.colorhash[d.data.nameShort.substring(0, 2)]);
+          return dataAndFunctions.colorhash[d.data.nameShort.substring(0, 2)] ? dataAndFunctions.colorhash[d.data.nameShort.substring(0, 2)] : dataAndFunctions.colorhash['no'];
         } else if (d.depth == 2) {
-          return colorPalette(dataAndFunctions.colorhash[d.parent.data.nameShort.substring(0, 2)]);
-        } else if (d.depth >= 3) {
-          return colorPalette(dataAndFunctions.colorhash[d.parent.parent.data.nameShort.substring(0, 2)]);
+          return dataAndFunctions.colorhash[d.parent.data.nameShort.substring(0, 2)] ? dataAndFunctions.colorhash[d.parent.data.nameShort.substring(0, 2)] : dataAndFunctions.colorhash['no'];
+        } else if (d.depth == 3) {
+          return dataAndFunctions.colorhash[d.parent.data.nameShort.substring(0, 2)] ? dataAndFunctions.colorhash[d.parent.data.nameShort.substring(0, 2)] : dataAndFunctions.colorhash['no'];
+        } else if (d.depth >= 4) {
+          return dataAndFunctions.colorhash[d.parent.parent.parent.data.nameShort.substring(0, 2)] ? dataAndFunctions.colorhash[d.parent.parent.parent.data.nameShort.substring(0, 2)] : dataAndFunctions.colorhash['no'];
         } else {
           return "turquoise";
         }
-      }).style("fill-opacity", function (d) {
+      })
+      .style("fill-opacity", function (d) {
         if (d.depth >= 1) {
           return "0.5";
         } else {
@@ -348,8 +388,8 @@ exports.visualizeBOKData = function (svgId, jsonFile, textId) {
       });
 
     var text = g.selectAll("text").data(nodes).enter().append("text").attr("class", "label").style("pointer-events", "none").style("fill-opacity", function (d) {
-        return d.parent === root || (d === root && d.children == null) ? 1 : 0;
-      })
+      return d.parent === root || (d === root && d.children == null) ? 1 : 0;
+    })
       .style("display", function (d) {
         return d.parent === root || (d === root && d.children == null) ? "inline" : "none";
       })
@@ -431,6 +471,9 @@ exports.visualizeBOKData = function (svgId, jsonFile, textId) {
 
   //displays all available content for the currently focussed concept in the description box:
   exports.displayConcept = function (d) {
+    if (d || d.data) {
+      dataAndFunctions.currentNode = d.data ? d.data : d;
+    }
     if (textId != null) {
 
       if (textId[0] == "#")
@@ -447,12 +490,22 @@ exports.visualizeBOKData = function (svgId, jsonFile, textId) {
       titleNode.id = "boktitle";
       titleNode.attributes = "#boktitle";
       titleNode.innerHTML = "[" + d.nameShort + "] " + d.name; //display Name and shortcode of concept:
+      titleNode.style="margin-bottom: 0px;";
 
       var pNode = document.createElement("p");
-      pNode.innerHTML = "Permalink: <a href= 'https://bok.eo4geo.eu/" + d.nameShort + "'> https://bok.eo4geo.eu/" + d.nameShort + "</a>";
+      pNode.innerHTML = "Permalink: <a href= 'https://bok.eo4geo.eu/" + d.nameShort + "' target='_blank'> https://bok.eo4geo.eu/" + d.nameShort + "</a>";
 
       mainNode.appendChild(pNode);
       mainNode.appendChild(titleNode);
+
+      if ( d.selfAssesment ){
+        var statusNode = document.createElement("div");
+        statusNode.innerHTML=d.selfAssesment;
+        let statusText = document.createElement("div");
+        statusText.innerHTML= 'Status: ' + statusNode.innerText;
+        statusText.style="margin-bottom: 10px;";
+        mainNode.appendChild(statusText);
+      }
 
       //display description of concept.
       var descriptionNode = document.createElement("div");
@@ -461,7 +514,7 @@ exports.visualizeBOKData = function (svgId, jsonFile, textId) {
         if (d.timestamp != null && d.timestamp != "")
           timeFormat = "<small> Last Updated: " + new Date(d.timestamp).toUTCString() + " </small><br>";
         var headline = "<h5>Description:</h5>";
-        var currentTxt = "<div id='currentDescription' class='hideContent'>" + d.description + "</div>";
+        var currentTxt = "<div id='currentDescription' class='hideContent'>" + d.description + "</div><br>";
         descriptionNode.innerHTML = timeFormat + headline + currentTxt;
       } else
         descriptionNode.innerHTML = "";
@@ -472,12 +525,14 @@ exports.visualizeBOKData = function (svgId, jsonFile, textId) {
       // Display hierarchy of parent concepts in a definition list:
       if (d.parent != null) {
         parents = [];
+        let cont = 1;
         //trace all parents upwards from the hierarchy
         for (var p = d.parent; p != null; p = p.parent) {
           parents.push(p);
         }
+        if ( d.otherParents.length > 0) cont = cont + d.otherParents.length;
         var tab = "";
-        var text = "<h5>Superconcepts [" + parents.length + "] </h5><div><dl>";
+        var text = "<h5>Superconcepts [" + cont + "] </h5><div><dl>";
         var parent = parents.pop();
         /* We attach the browseToConcept function in order to be able to browse to SuperConcepts
          from the concept's list browser of the right */
@@ -494,20 +549,46 @@ exports.visualizeBOKData = function (svgId, jsonFile, textId) {
       } else
         infoNode.innerHTML = "";
 
+      //case when a concept has more than one parent
+      if ( d.otherParents.length > 0  ) {
+        for ( let i = 0; i < d.otherParents.length ; i++ ){
+          let otherPar = [];
+          let op = d.otherParents[i];
+          while ( op != null ) {
+            otherPar.push(op);
+            op = op.parent
+          }
+          var other = otherPar.pop();
+          var text = "<div><dl>";
+          text += "<a class='concept-name' style='color: #007bff; font-weight: 400; cursor: pointer;' onclick='browseToConcept(" + other.nameShort + ")'><b>-</b> " + other.name + "</a>";
+          tab += "";
+          while (otherPar.length > 0) {
+            other = otherPar.pop();
+            text += "<dd style='margin: 0 0 1.5em 0.8em'><dl><dt style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' onclick='browseToConcept(\"" + other.nameShort + "\")'><b>-</b> " + "[" + other.nameShort + "] " + other.name + "</dt>";
+            tab += "</dl></dd>";
+          }
+          text += tab + "</dl></div>";
+          infoNode.innerHTML += text;
+        }
+      }
+
       //display description of subconcepts (if any):
       displayOrderedList(d.children, "name", "Subconcepts", infoNode, "boksubconcepts");
 
       //display description of prerequisites (if any):
-      // displayUnorderedList(d.prerequisites, null, "Prequisites", infoNode, "bokprequisites");
+      displayUnorderedList(d.prerequisites, null, "Prequisites", infoNode, "bokprequisites");
 
       //display description of postrequisites (if any):
       // displayUnorderedList(d.postrequisites, null, "Postrequisites", infoNode, "bokpostrequisites");
 
       //display description of similar concepts (if any):
-      // displayUnorderedList(d.similarConcepts, null, "Similar concepts", infoNode, "boksimilar");
+      displayUnorderedList(d.similarConcepts, null, "Similar concepts", infoNode, "boksimilar");
 
       //display description of demonstrable skills (if any):
       displayUnorderedList(d.demonstrableSkills, "description", "Demonstrable skills", infoNode, "bokskills");
+
+      //display contributors of concept (if any):
+      displayUnorderedList(d.contributors, "url", "Contributors", infoNode, "boksource");
 
       //display source documents of concept (if any):
       displayUnorderedList(d.sourceDocuments, "url", "Source documents", infoNode, "boksource");
@@ -566,35 +647,47 @@ exports.visualizeBOKData = function (svgId, jsonFile, textId) {
 
   //displays a list of textelements in HTML
   displayUnorderedList = function (array, propertyname, headline, domElement, idNode) {
-      if (array != null && array.length != 0) {
-        var text = "";
-        text += "";
-        text += "<h5>" + headline + " [" + array.length + "] </h5><div #" + idNode + " id=" + idNode + "><ul>";
-        for (var i = 0, j = array.length; i < j; i++) {
-          var nameShort;
-          var value;
-          if (propertyname != null) { //For Subconcepts and Demonstrable Skills and Source Documents
-            value = array[i][propertyname];
-            nameShort = array[i]['nameShort'];
-          } else { //For Similar, Postrequisites and Prerequisites
-            value = array[i];
-            nameShort = array[i];
-          }
-          /* We attach the browseToConcept function to each subconcept of the list */
-          if (headline == "Subconcepts") {
-            text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' id='sc-" + nameShort + "' onclick='browseToConcept(\"" + nameShort + "\")'>" + "[" + nameShort + "] " + value + "</a> <br>";
-          } else if (headline == "Similar concepts" || headline == "Postrequisites" || headline == "Prequisites") {
-            text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' onclick='browseToConcept(\"" + nameShort + "\")'>" + value + "</a> <br>";
-          } else if (headline == "Source documents") {
+    if (array != null && array.length != 0) {
+      var text = "";
+      text += "";
+      text += "<h5>" + headline + " [" + array.length + "] </h5><div #" + idNode + " id=" + idNode + "><ul>";
+      for (var i = 0, j = array.length; i < j; i++) {
+        var nameShort;
+        var value;
+        if (propertyname != null) { //For Subconcepts and Demonstrable Skills and Source Documents
+          value = array[i][propertyname];
+          nameShort = array[i]['nameShort'];
+        } else { //For Similar, Postrequisites and Prerequisites
+          value = array[i];
+          nameShort = array[i]['nameShort'];
+        }
+        /* We attach the browseToConcept function to each subconcept of the list */
+        if (headline == "Subconcepts") {
+          text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' id='sc-" + nameShort + "' onclick='browseToConcept(\"" + nameShort + "\")'>" + "[" + nameShort + "] " + value + "</a> <br>";
+        } else if (headline == "Similar concepts" || headline == "Postrequisites" || headline == "Prequisites") {
+          text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' id='sc-" + nameShort + "' onclick='browseToConcept(\"" + nameShort + "\")'>[" + nameShort + '] ' + array[i].name + "</a> <br>";
+        } else if (headline == "Source documents") {
+          if (value.length > 1) {
             text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' href='" + value + "'>" + nameShort + "</a> <br>";
           } else {
-            text += "<a>" + value + "</a> <br>";
+            text += "<a>" + nameShort + "</a> <br>";
           }
-        };
-        text += "</ul></div>";
-        domElement.innerHTML += text;
-      }
-    },
+        } else if (headline == "Contributors") {
+          if ( i == j-1 ) {
+            text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' href='" + value + "'>" + nameShort + "</a> ";
+          } else if (value.length > 1) {
+            text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' href='" + value + "'>" + nameShort + "</a>, ";
+          }  else{
+            text += "<p>" + nameShort + "</p>, ";
+          }
+        } else {
+          text += "<a>" + value + "</a> <br>";
+        }
+      };
+      text += "</ul></div>";
+      domElement.innerHTML += text;
+    }
+  },
 
     browseToConcept = function (nameShort) {
       var node = null
@@ -612,6 +705,9 @@ exports.visualizeBOKData = function (svgId, jsonFile, textId) {
     },
     exports.browseToConcept = function (nameShort) {
       browseToConcept(nameShort);
+    },
+    exports.getCurrentNode = function () {
+      return dataAndFunctions.currentNode;
     }
 
   var selectedNodes = [];
