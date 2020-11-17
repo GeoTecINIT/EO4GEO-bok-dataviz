@@ -300,7 +300,7 @@ exports.visualizeBOKData = function (svgId, textId) {
     .size([diameter - margin, diameter - margin])
     .padding(2);
 
-  d3.json("https://eo4geo-uji.firebaseio.com/current.json").then((root, error) => {
+  d3.json("https://findinbok.firebaseio.com/current.json").then((root, error) => {
     var bokData = exports.parseBOKData(root);
 
     if (error) throw error;
@@ -585,7 +585,7 @@ exports.visualizeBOKData = function (svgId, textId) {
       displayUnorderedList(d.similarConcepts, null, "Similar concepts", infoNode, "boksimilar");
 
       //display description of demonstrable skills (if any):
-      displayUnorderedList(d.demonstrableSkills, "description", "Demonstrable skills", infoNode, "bokskills");
+      displayUnorderedList(d.demonstrableSkills, "description", "Skills", infoNode, "bokskills");
 
       //display contributors of concept (if any):
       displayUnorderedList(d.contributors, "url", "Contributors", infoNode, "boksource");
