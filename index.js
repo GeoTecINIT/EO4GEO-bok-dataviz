@@ -220,7 +220,7 @@ exports.parseBOKData = function (bokJSON) {
   for (var l = 0; l < bokJSON.relations.length; l++) {
     // children - parent relation
     if (bokJSON.relations[l].name == Relationtype.SUBCONCEPT) {
-      if ( allNodes[bokJSON.relations[l].source].parent != null ) {
+      if (allNodes[bokJSON.relations[l].source].parent != null) {
         allNodes[bokJSON.relations[l].source].otherParents.push(allNodes[bokJSON.relations[l].target]);
       } else {
         allNodes[bokJSON.relations[l].source].parent = allNodes[bokJSON.relations[l].target];
@@ -388,8 +388,8 @@ exports.visualizeBOKData = function (svgId, textId) {
       });
 
     var text = g.selectAll("text").data(nodes).enter().append("text").attr("class", "label").style("pointer-events", "none").style("fill-opacity", function (d) {
-      return d.parent === root || (d === root && d.children == null) ? 1 : 0;
-    })
+        return d.parent === root || (d === root && d.children == null) ? 1 : 0;
+      })
       .style("display", function (d) {
         return d.parent === root || (d === root && d.children == null) ? "inline" : "none";
       })
@@ -490,7 +490,7 @@ exports.visualizeBOKData = function (svgId, textId) {
       titleNode.id = "boktitle";
       titleNode.attributes = "#boktitle";
       titleNode.innerHTML = "[" + d.nameShort + "] " + d.name; //display Name and shortcode of concept:
-      titleNode.style="margin-bottom: 0px;";
+      titleNode.style = "margin-bottom: 0px;";
 
       var pNode = document.createElement("p");
       pNode.innerHTML = "Permalink: <a href= 'https://bok.eo4geo.eu/" + d.nameShort + "' target='_blank'> https://bok.eo4geo.eu/" + d.nameShort + "</a>";
@@ -498,12 +498,12 @@ exports.visualizeBOKData = function (svgId, textId) {
       mainNode.appendChild(pNode);
       mainNode.appendChild(titleNode);
 
-      if ( d.selfAssesment ){
+      if (d.selfAssesment) {
         var statusNode = document.createElement("div");
-        statusNode.innerHTML=d.selfAssesment;
+        statusNode.innerHTML = d.selfAssesment;
         let statusText = document.createElement("div");
-        statusText.innerHTML= 'Status: ' + statusNode.innerText;
-        statusText.style="margin-bottom: 10px;";
+        statusText.innerHTML = 'Status: ' + statusNode.innerText;
+        statusText.style = "margin-bottom: 10px;";
         mainNode.appendChild(statusText);
       }
 
@@ -530,7 +530,7 @@ exports.visualizeBOKData = function (svgId, textId) {
         for (var p = d.parent; p != null; p = p.parent) {
           parents.push(p);
         }
-        if ( d.otherParents.length > 0) cont = cont + d.otherParents.length;
+        if (d.otherParents.length > 0) cont = cont + d.otherParents.length;
         var tab = "";
         var text = "<h5>Superconcepts [" + cont + "] </h5><div><dl>";
         var parent = parents.pop();
@@ -550,11 +550,11 @@ exports.visualizeBOKData = function (svgId, textId) {
         infoNode.innerHTML = "";
 
       //case when a concept has more than one parent
-      if ( d.otherParents.length > 0  ) {
-        for ( let i = 0; i < d.otherParents.length ; i++ ){
+      if (d.otherParents.length > 0) {
+        for (let i = 0; i < d.otherParents.length; i++) {
           let otherPar = [];
           let op = d.otherParents[i];
-          while ( op != null ) {
+          while (op != null) {
             otherPar.push(op);
             op = op.parent
           }
@@ -647,47 +647,49 @@ exports.visualizeBOKData = function (svgId, textId) {
 
   //displays a list of textelements in HTML
   displayUnorderedList = function (array, propertyname, headline, domElement, idNode) {
-    if (array != null && array.length != 0) {
-      var text = "";
-      text += "";
-      text += "<h5>" + headline + " [" + array.length + "] </h5><div #" + idNode + " id=" + idNode + "><ul>";
-      for (var i = 0, j = array.length; i < j; i++) {
-        var nameShort;
-        var value;
-        if (propertyname != null) { //For Subconcepts and Demonstrable Skills and Source Documents
-          value = array[i][propertyname];
-          nameShort = array[i]['nameShort'];
-        } else { //For Similar, Postrequisites and Prerequisites
-          value = array[i];
-          nameShort = array[i]['nameShort'];
-        }
-        /* We attach the browseToConcept function to each subconcept of the list */
-        if (headline == "Subconcepts") {
-          text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' id='sc-" + nameShort + "' onclick='browseToConcept(\"" + nameShort + "\")'>" + "[" + nameShort + "] " + value + "</a> <br>";
-        } else if (headline == "Similar concepts" || headline == "Postrequisites" || headline == "Prequisites") {
-          text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' id='sc-" + nameShort + "' onclick='browseToConcept(\"" + nameShort + "\")'>[" + nameShort + '] ' + array[i].name + "</a> <br>";
-        } else if (headline == "Source documents") {
-          if (value.length > 1) {
-            text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' href='" + value + "'>" + nameShort + "</a> <br>";
+      if (array != null && array.length != 0) {
+        var text = "";
+        text += "";
+        text += "<h5>" + headline + " [" + array.length + "] </h5><div #" + idNode + " id=" + idNode + "><ul>";
+        for (var i = 0, j = array.length; i < j; i++) {
+          var nameShort;
+          var value;
+          if (propertyname != null) { //For Subconcepts and Demonstrable Skills and Source Documents
+            value = array[i][propertyname];
+            nameShort = array[i]['nameShort'];
+          } else { //For Similar, Postrequisites and Prerequisites
+            value = array[i];
+            nameShort = array[i]['nameShort'];
+          }
+          /* We attach the browseToConcept function to each subconcept of the list */
+          if (headline == "Subconcepts") {
+            text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' id='sc-" + nameShort + "' onclick='browseToConcept(\"" + nameShort + "\")'>" + "[" + nameShort + "] " + value + "</a> <br>";
+          } else if (headline == "Similar concepts" || headline == "Postrequisites" || headline == "Prequisites") {
+            text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' id='sc-" + nameShort + "' onclick='browseToConcept(\"" + nameShort + "\")'>[" + nameShort + '] ' + array[i].name + "</a> <br>";
+          } else if (headline == "Source documents") {
+            if (value.length > 1) {
+              text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' href='" + value + "'>" + nameShort + "</a> <br>";
+            } else {
+              text += "<a>" + nameShort + "</a> <br>";
+            }
+          } else if (headline == "Contributors") {
+            if (i == j - 1) {
+              text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' href='" + value + "'>" + nameShort + "</a> ";
+            } else if (value.length > 1) {
+              text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' href='" + value + "'>" + nameShort + "</a>, ";
+            } else {
+              text += "<p>" + nameShort + "</p>, ";
+            }
+          } else if (headline == "Skills") {
+            text += "<li>" + value + "</li>";
           } else {
-            text += "<a>" + nameShort + "</a> <br>";
+            text += "<a>" + value + "</a> <br>";
           }
-        } else if (headline == "Contributors") {
-          if ( i == j-1 ) {
-            text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' href='" + value + "'>" + nameShort + "</a> ";
-          } else if (value.length > 1) {
-            text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' href='" + value + "'>" + nameShort + "</a>, ";
-          }  else{
-            text += "<p>" + nameShort + "</p>, ";
-          }
-        } else {
-          text += "<a>" + value + "</a> <br>";
-        }
-      };
-      text += "</ul></div>";
-      domElement.innerHTML += text;
-    }
-  },
+        };
+        text += "</ul></div>";
+        domElement.innerHTML += text;
+      }
+    },
 
     browseToConcept = function (nameShort) {
       var node = null
