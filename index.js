@@ -665,27 +665,27 @@ exports.visualizeBOKData = function (svgId, textId) {
           if (headline == "Subconcepts") {
             text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' id='sc-" + nameShort + "' onclick='browseToConcept(\"" + nameShort + "\")'>" + "[" + nameShort + "] " + value + "</a> <br>";
           } else if (headline == "Similar concepts" || headline == "Postrequisites" || headline == "Prequisites") {
-            text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' id='sc-" + nameShort + "' onclick='browseToConcept(\"" + nameShort + "\")'>[" + nameShort + '] ' + array[i].name + "</a> <br>";
+            text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' onclick='browseToConcept(\"" + nameShort + "\")'>" + value + "</a> <br>";
           } else if (headline == "Source documents") {
             if (value.length > 1) {
-              text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' href='" + value + "'>" + nameShort + "</a> <br>";
+              text += "<li><a style='color: #007bff; font-weight: 400; cursor: pointer;' target='_blank' href='" + value + "'>" + nameShort + "</a></li>";
             } else {
-              text += "<a>" + nameShort + "</a> <br>";
+              text += "<li><a>" + nameShort + "</a></li>";
             }
           } else if (headline == "Contributors") {
             if (i == j - 1) {
-              text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' href='" + value + "'>" + nameShort + "</a> ";
+              text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' target='_blank' href='" + value + "'>" + nameShort + "</a> ";
             } else if (value.length > 1) {
-              text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' href='" + value + "'>" + nameShort + "</a>, ";
+              text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' target='_blank' href='" + value + "'>" + nameShort + "</a>, ";
             } else {
               text += "<p>" + nameShort + "</p>, ";
             }
           } else if (headline == "Skills") {
             text += "<li>" + value + "</li>";
           } else {
-            text += "<a>" + value + "</a> <br>";
+            text += "<a>" + value + "</a> <br> ";
           }
-        };
+          };
         text += "</ul></div>";
         domElement.innerHTML += text;
       }
