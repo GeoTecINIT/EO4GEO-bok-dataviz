@@ -585,7 +585,7 @@ exports.visualizeBOKData = function (svgId, textId) {
       displayUnorderedList(d.similarConcepts, null, "Similar concepts", infoNode, "boksimilar");
 
       //display description of demonstrable skills (if any):
-      displayUnorderedList(d.demonstrableSkills, "description", "Demonstrable skills", infoNode, "bokskills");
+      displayUnorderedList(d.demonstrableSkills, "description", "Skills", infoNode, "bokskills");
 
       //display contributors of concept (if any):
       displayUnorderedList(d.contributors, "url", "Contributors", infoNode, "boksource");
