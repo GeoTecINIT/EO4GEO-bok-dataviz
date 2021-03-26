@@ -1,6 +1,6 @@
 {
   "name": "@eo4geo/bok-dataviz",
-  "version": "5.2.8",
+  "version": "5.2.9",
   "description": "EO4GEO-bok-dataviz is an script to parse EO4GEO BoK and visualize it in a circle packing d3 layout",
   "main": "index.js",
   "dependencies": {

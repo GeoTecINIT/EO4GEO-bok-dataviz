@@ -665,7 +665,7 @@ exports.visualizeBOKData = function (svgId, textId) {
           if (headline == "Subconcepts") {
             text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' id='sc-" + nameShort + "' onclick='browseToConcept(\"" + nameShort + "\")'>" + "[" + nameShort + "] " + value + "</a> <br>";
           } else if (headline == "Similar concepts" || headline == "Postrequisites" || headline == "Prequisites") {
-            text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' onclick='browseToConcept(\"" + nameShort + "\")'>" + value + "</a> <br>";
+            text += "<a style='color: #007bff; font-weight: 400; cursor: pointer;' class='concept-name' id='sc-" + nameShort + "' onclick='browseToConcept(\"" + nameShort + "\")'>[" + nameShort + '] ' + array[i].name + "</a> <br>";
           } else if (headline == "Source documents") {
             if (value.length > 1) {
               text += "<li><a style='color: #007bff; font-weight: 400; cursor: pointer;' target='_blank' href='" + value + "'>" + nameShort + "</a></li>";
@@ -681,11 +681,11 @@ exports.visualizeBOKData = function (svgId, textId) {
               text += "<p>" + nameShort + "</p>, ";
             }
           } else if (headline == "Skills") {
-            text += "<li>" + value + "</li>";
+            text += "<li> <a>" + value + "</a> </li>";
           } else {
             text += "<a>" + value + "</a> <br> ";
           }
-          };
+        };
         text += "</ul></div>";
         domElement.innerHTML += text;
       }
